@@ -2,7 +2,6 @@
 
 namespace Metahash;
 
-
 class Crypto
 {
     public $net;
@@ -15,7 +14,7 @@ class Crypto
     public function __construct($ecdsa)
     {
         $this->ecdsa = $ecdsa;
-        $this->curl = curl_init();
+        $this->curl = \curl_init();
     }
 
     public function generate()
@@ -38,15 +37,15 @@ class Crypto
             if ($host = $this->getConnectionAddress('PROXY')) {
                 $host = $host.'/?act=addWallet&p_addr='.$address;
                 $curl = $this->curl;
-                curl_setopt($curl, CURLOPT_URL, $host);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-                curl_setopt($curl, CURLOPT_TIMEOUT, 2);
-                curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_HTTPGET, false);
+                \curl_setopt($curl, CURLOPT_URL, $host);
+                \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+                \curl_setopt($curl, CURLOPT_TIMEOUT, 2);
+                \curl_setopt($curl, CURLOPT_POST, 1);
+                \curl_setopt($curl, CURLOPT_HTTPGET, false);
 
-                $result = curl_exec($curl);
-                if (strstr($result, 'Transaction accapted.')) {
+                $result = \curl_exec($curl);
+                if (\strstr($result, 'Transaction accapted.')) {
                     return true;
                 }
             }
@@ -68,11 +67,11 @@ class Crypto
 
         switch ($node) {
             case 'PROXY':
-                $node_url = sprintf($this->proxy['url'], $this->net);
+                $node_url = \sprintf($this->proxy['url'], $this->net);
                 $node_port = $this->proxy['port'];
                 break;
             case 'TORRENT':
-                $node_url = sprintf($this->torrent['url'], $this->net);
+                $node_url = \sprintf($this->torrent['url'], $this->net);
                 $node_port = $this->torrent['port'];
                 break;
             default:
@@ -81,7 +80,7 @@ class Crypto
         }
 
         if ($node_url) {
-            $list = dns_get_record($node_url, DNS_A);
+            $list = \dns_get_record($node_url, DNS_A);
             $host_list = [];
             foreach ($list as $val) {
                 switch ($node) {
@@ -99,9 +98,9 @@ class Crypto
                 }
             }
 
-            arsort($host_list);
-            $keys = array_keys($host_list);
-            if (count($keys)) {
+            \arsort($host_list);
+            $keys = \array_keys($host_list);
+            if (\count($keys)) {
                 return $keys[0];
             }
         }
@@ -114,14 +113,14 @@ class Crypto
     {
         if (! empty($host)) {
             $curl = $this->curl;
-            curl_setopt($curl, CURLOPT_URL, $host);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 1);
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"","params":[]}');
-            curl_exec($curl);
-            $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            \curl_setopt($curl, CURLOPT_URL, $host);
+            \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+            \curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+            \curl_setopt($curl, CURLOPT_POST, 1);
+            \curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"","params":[]}');
+            \curl_exec($curl);
+            $code = \curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
             if ($code > 0 && $code < 500) {
                 return true;
@@ -135,17 +134,17 @@ class Crypto
     {
         if (! empty($host)) {
             $curl = $this->curl;
-            curl_setopt($curl, CURLOPT_URL, $host);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-            curl_setopt($curl, CURLOPT_TIMEOUT, 1);
-            curl_setopt($curl, CURLOPT_POST, 1);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"get-count-blocks","params":[]}');
-            $res = curl_exec($curl);
-            $res = json_decode($res, true);
+            \curl_setopt($curl, CURLOPT_URL, $host);
+            \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+            \curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+            \curl_setopt($curl, CURLOPT_POST, 1);
+            \curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"get-count-blocks","params":[]}');
+            $res = \curl_exec($curl);
+            $res = \json_decode($res, true);
 
             if (isset($res['result']['count_blocks'])) {
-                return intval($res['result']['count_blocks']);
+                return \intval($res['result']['count_blocks']);
             }
         }
 
@@ -161,36 +160,33 @@ class Crypto
     {
         try {
             $query = [
-                'id'     => time(),
-                'method' => trim($method),
+                'id'     => \time(),
+                'method' => \trim($method),
                 'params' => $data,
             ];
-            $query = json_encode($query);
+            $query = \json_encode($query);
             $url = $this->getConnectionAddress('TORRENT');
 
 
             if ($url) {
                 $curl = $this->curl;
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-                curl_setopt($curl, CURLOPT_TIMEOUT, 3);
-                curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_HTTPGET, false);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
+                \curl_setopt($curl, CURLOPT_URL, $url);
+                \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+                \curl_setopt($curl, CURLOPT_TIMEOUT, 3);
+                \curl_setopt($curl, CURLOPT_POST, 1);
+                \curl_setopt($curl, CURLOPT_HTTPGET, false);
+                \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
 
-                $result = curl_exec($curl);
+                $result = \curl_exec($curl);
 
-                $result = json_decode($result, true);
+                $result = \json_decode($result, true);
 
                 return $result;
             }
             throw new Exception('The proxy service is not available. Maybe you have problems with DNS.');
-
         } catch (Exception $e) {
-
             throw new Exception($e->getMessage());
-
         }
 
         return false;
@@ -205,9 +201,9 @@ class Crypto
     {
         $txData = [
             'to'     => $to,
-            'value'  => strval($value),
-            'fee'    => strval($fee),
-            'nonce'  => strval($nonce),
+            'value'  => \strval($value),
+            'fee'    => \strval($fee),
+            'nonce'  => \strval($nonce),
             'data'   => $data,
             'pubkey' => $key,
             'sign'   => $sign,
@@ -220,38 +216,35 @@ class Crypto
     {
         try {
             $query = [
-                'id'     => time(),
-                'method' => trim($method),
+                'id'     => \time(),
+                'method' => \trim($method),
                 'params' => $data,
             ];
-            $query = json_encode($query);
+            $query = \json_encode($query);
             $url = $this->getConnectionAddress('PROXY');
 
 
             if ($url) {
                 $curl = $this->curl;
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-                curl_setopt($curl, CURLOPT_TIMEOUT, 3);
-                curl_setopt($curl, CURLOPT_POST, 1);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
+                \curl_setopt($curl, CURLOPT_URL, $url);
+                \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+                \curl_setopt($curl, CURLOPT_TIMEOUT, 3);
+                \curl_setopt($curl, CURLOPT_POST, 1);
+                \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
 
-                $result = curl_exec($curl);
-                $err = curl_error($curl);
-                $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                $result = \curl_exec($curl);
+                $err = \curl_error($curl);
+                $code = \curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
 
-                $result = json_decode($result, true);
+                $result = \json_decode($result, true);
 
                 return $result;
             }
             throw new Exception('The proxy service is not available. Maybe you have problems with DNS.');
-
         } catch (Exception $e) {
-
             throw new Exception($e->getMessage());
-
         }
 
         return false;
@@ -261,7 +254,7 @@ class Crypto
     {
         $res = $this->fetchBalance($address);
 
-        return (isset($res['result']['count_spent'])) ? intval($res['result']['count_spent']) + 1 : 1;
+        return (isset($res['result']['count_spent'])) ? \intval($res['result']['count_spent']) + 1 : 1;
     }
 
     public function fetchBalance($address)
@@ -271,26 +264,24 @@ class Crypto
 
     public function makeSign($address, $value, $nonce, $fee = 0, $data = '')
     {
-        $a = (substr($address, 0, 2) === '0x') ? substr($address, 2) : $address; // адрес
-        $b = IntHelper::VarUInt(intval($value), true); // сумма
-        $c = IntHelper::VarUInt(intval($fee), true); // комиссия
-        $d = IntHelper::VarUInt(intval($nonce), true); // нонс
+        $a = (\substr($address, 0, 2) === '0x') ? \substr($address, 2) : $address; // адрес
+        $b = IntHelper::VarUInt(\intval($value), true); // сумма
+        $c = IntHelper::VarUInt(\intval($fee), true); // комиссия
+        $d = IntHelper::VarUInt(\intval($nonce), true); // нонс
 
         $f = $data; // дата
-        $data_length = strlen($f);
+        $data_length = \strlen($f);
         $data_length = ($data_length > 0) ? $data_length / 2 : 0;
-        $e = IntHelper::VarUInt(intval($data_length), true); // счетчик для даты
+        $e = IntHelper::VarUInt(\intval($data_length), true); // счетчик для даты
 
         $sign_text = $a.$b.$c.$d.$e.$f;
 
 
-        return hex2bin($sign_text);
+        return \hex2bin($sign_text);
     }
 
     public function sign($sign_text, $private_key)
     {
         return $this->ecdsa->sign($sign_text, $private_key);
     }
-
-
 }

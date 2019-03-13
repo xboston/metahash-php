@@ -2,8 +2,10 @@
 .idea
 .yarn
 .vscode
+.php_cs
 .php_cs.cache
 .phpstorm.meta.php
 .DS_Store
 phplint.cache
 composer.lock
+Makefile

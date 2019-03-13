@@ -14,7 +14,7 @@
 git clone git@github.com:xboston/php-metahash.git
 cd php-metahash
 composer install --no-dev
-php example/cli.php method=generate
+php examples/cli.php method=generate
 ```
 
 ## API
