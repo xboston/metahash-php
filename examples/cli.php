@@ -63,10 +63,6 @@ try {
         echo \json_encode($crypto->getTx($args['hash']));
         break;
 
-    case 'get-list-address':
-        echo \json_encode($crypto->listAddress());
-        break;
-
     case 'create-tx':
         //
         break;
