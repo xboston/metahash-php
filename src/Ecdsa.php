@@ -144,10 +144,10 @@ class Ecdsa
 
     public function toBase16($string)
     {
-        return (\substr($string, 0, 2) === '0x') ? $string : '0x'.$string;
+        return (\strpos($string, '0x') === 0) ? $string : '0x'.$string;
     }
 
-    public function checkAdress($address): bool
+    public function checkAdress(string $address): bool
     {
         if (! empty($address)) {
             if (\strlen($this->parseBase16($address)) % 2) {

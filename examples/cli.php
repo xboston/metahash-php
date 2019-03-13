@@ -21,11 +21,10 @@ try {
     $args['nonce'] = isset($args['nonce']) && ! empty($args['nonce']) ? \intval($args['nonce']) : 0;
 
     if (empty($args['method']) || $args['method'] === null) {
-        throw new Exception('method is empty', 1);
+        throw new \Exception('method is empty', 1);
     }
 
     $crypto = new Crypto(new Ecdsa());
-    //$crypto->debug = true;w
     $crypto->net = $args['net'];
 
     switch ($args['method']) {
@@ -40,7 +39,7 @@ try {
     case 'fetch-balance':
         check_net_arg($args);
         if ($crypto->checkAdress($args['address']) === false) {
-            throw new Exception('invalid address value', 1);
+            throw new \Exception('invalid address value', 1);
         }
 
         echo \json_encode($crypto->fetchBalance($args['address']));
@@ -49,7 +48,7 @@ try {
     case 'fetch-history':
         check_net_arg($args);
         if ($crypto->checkAdress($args['address']) === false) {
-            throw new Exception('invalid address value', 1);
+            throw new \Exception('invalid address value', 1);
         }
 
         echo \json_encode($crypto->fetchHistory($args['address']));
@@ -58,7 +57,7 @@ try {
     case 'get-tx':
         check_net_arg($args);
         if (empty($args['hash'])) {
-            throw new Exception('hash is empty', 1);
+            throw new \Exception('hash is empty', 1);
         }
 
         echo \json_encode($crypto->getTx($args['hash']));
@@ -76,7 +75,7 @@ try {
         check_net_arg($args);
 
         if (($keys = $crypto->readAddress($args['address'])) == false) {
-            throw new Exception('address file not found', 1);
+            throw new \Exception('address file not found', 1);
         }
 
         $nonce = $crypto->getNonce($args['address']);
@@ -99,7 +98,7 @@ try {
         break;
 
     default:
-        throw new Exception('method not found', 1);
+        throw new \Exception('method not found', 1);
             break;
     }
 } catch (Exception $e) {
@@ -133,8 +132,8 @@ function hex2str($hex)
 function check_net_arg($args)
 {
     if (empty($args['net']) || $args['net'] == null) {
-        throw new Exception('net is empty', 1);
+        throw new \Exception('net is empty', 1);
     } elseif (\in_array($args['net'], ['main', 'dev', 'test'], true) == false) {
-        throw new Exception('unsupported net value', 1);
+        throw new \Exception('unsupported net value', 1);
     }
 }

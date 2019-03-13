@@ -7,6 +7,9 @@ use Exception;
 class Crypto
 {
     public $net;
+    /**
+     * @var Ecdsa
+     */
     private $ecdsa;
     private $curl;
     private $proxy = ['url' => 'proxy.net-%s.metahash.org', 'port' => 9999];
@@ -142,10 +145,15 @@ class Crypto
             \curl_setopt($curl, CURLOPT_POST, 1);
             \curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"get-count-blocks","params":[]}');
             $res = \curl_exec($curl);
+
+            if ($res===false) {
+                return 0;
+            }
+
             $res = \json_decode($res, true);
 
             if (isset($res['result']['count_blocks'])) {
-                return \intval($res['result']['count_blocks']);
+                return (int)$res['result']['count_blocks'];
             }
         }
 
@@ -185,9 +193,9 @@ class Crypto
 
                 return $result;
             }
-            throw new Exception('The proxy service is not available. Maybe you have problems with DNS.');
+            throw new \Exception('The proxy service is not available. Maybe you have problems with DNS.');
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
 
         return false;
@@ -243,9 +251,9 @@ class Crypto
 
                 return $result;
             }
-            throw new Exception('The proxy service is not available. Maybe you have problems with DNS.');
+            throw new \Exception('The proxy service is not available. Maybe you have problems with DNS.');
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
 
         return false;
