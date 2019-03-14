@@ -33,7 +33,7 @@ try {
         $result = $crypto->generate();
         $crypto->net = 'test';
         $crypto->create($result['address']);
-        echo \json_encode($result);
+        echo \json_encode($result, JSON_PRETTY_PRINT);
         break;
 
     case 'fetch-balance':
@@ -42,7 +42,7 @@ try {
             throw new \Exception('invalid address value', 1);
         }
 
-        echo \json_encode($crypto->fetchBalance($args['address']));
+        echo \json_encode($crypto->fetchBalance($args['address']), JSON_PRETTY_PRINT);
         break;
 
     case 'fetch-history':
@@ -51,7 +51,7 @@ try {
             throw new \Exception('invalid address value', 1);
         }
 
-        echo \json_encode($crypto->fetchHistory($args['address']));
+        echo \json_encode($crypto->fetchHistory($args['address']), JSON_PRETTY_PRINT);
         break;
 
     case 'get-tx':
@@ -60,7 +60,7 @@ try {
             throw new \Exception('hash is empty', 1);
         }
 
-        echo \json_encode($crypto->getTx($args['hash']));
+        echo \json_encode($crypto->getTx($args['hash']), JSON_PRETTY_PRINT);
         break;
 
     case 'create-tx':
@@ -90,7 +90,7 @@ try {
         $sign = $crypto->sign($sign_text, $keys['private']);
         $res = $crypto->sendTx($args['to'], $args['value'], $args['fee'], $nonce, $args['data'], $keys['public'], $sign);
 
-        echo \json_encode($res);
+        echo \json_encode($res, JSON_PRETTY_PRINT);
         break;
 
     default:
@@ -98,7 +98,7 @@ try {
             break;
     }
 } catch (Exception $e) {
-    echo \json_encode(['error' => true, 'message' => $e->getMessage()]);
+    echo \json_encode(['error' => true, 'message' => $e->getMessage()], JSON_PRETTY_PRINT);
 }
 
 function is_base64_encoded($data)
