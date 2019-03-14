@@ -70,17 +70,17 @@ class Crypto
         $node_port = null;
 
         switch ($node) {
-        case 'PROXY':
-            $node_url = \sprintf($this->proxy['url'], $this->net);
-            $node_port = $this->proxy['port'];
-            break;
-        case 'TORRENT':
-            $node_url = \sprintf($this->torrent['url'], $this->net);
-            $node_port = $this->torrent['port'];
-            break;
-        default:
-            // empty
-            break;
+            case 'PROXY':
+                $node_url = \sprintf($this->proxy['url'], $this->net);
+                $node_port = $this->proxy['port'];
+                break;
+            case 'TORRENT':
+                $node_url = \sprintf($this->torrent['url'], $this->net);
+                $node_port = $this->torrent['port'];
+                break;
+            default:
+                // empty
+                break;
         }
 
         if ($node_url) {
@@ -88,17 +88,17 @@ class Crypto
             $host_list = [];
             foreach ($list as $val) {
                 switch ($node) {
-                case 'PROXY':
-                    if ($res = $this->checkHost($val['ip'].':'.$node_port)) {
-                        $host_list[$val['ip'].':'.$node_port] = 1;
-                    }
-                    break;
-                case 'TORRENT':
-                    $host_list[$val['ip'].':'.$node_port] = $this->torGetLastBlock($val['ip'].':'.$node_port);
-                    break;
-                default:
-                    // empty
-                    break;
+                    case 'PROXY':
+                        if ($res = $this->checkHost($val['ip'].':'.$node_port)) {
+                            $host_list[$val['ip'].':'.$node_port] = 1;
+                        }
+                        break;
+                    case 'TORRENT':
+                        $host_list[$val['ip'].':'.$node_port] = $this->torGetLastBlock($val['ip'].':'.$node_port);
+                        break;
+                    default:
+                        // empty
+                        break;
                 }
             }
 
