@@ -30,6 +30,7 @@ php examples/cli.php method=get-tx net=main hash=bc4a521c1d0d958e2c00e9cdf90a66b
 git clone git@github.com:xboston/php-metahash.git
 cd php-metahash
 composer install --no-dev
+cd examples
 php -S localhost:8000
 
 open browser: http://localhost:8000/
