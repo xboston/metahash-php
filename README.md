@@ -32,9 +32,9 @@ cd php-metahash
 composer install --no-dev
 cd examples
 php -S localhost:8000
-
-open browser: http://localhost:8000/
 ```
+
+open in browser: http://localhost:8000/
 
 ![](https://raw.githubusercontent.com/xboston/php-metahash/master/media/browser.png)
 
