@@ -20,15 +20,22 @@ php examples/cli.php method=generate
 
 ## More examples
 ```
-php examples/cli.php method=fetch-balance net=dev address=0x003da54f19ee81d86c0d6d40514b25efb701533e9f8e233fdc
-php examples/cli.php method=fetch-history net=dev address=0x003da54f19ee81d86c0d6d40514b25efb701533e9f8e233fdc
-php examples/cli.php method=get-tx net=dev hash=0b667d687e79d691e9f19ad9a547fdf810c7dfa45904287bef0d642961856928
+php examples/cli.php method=fetch-balance net=main address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
+php examples/cli.php method=fetch-history net=main address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
+php examples/cli.php method=get-tx net=main hash=bc4a521c1d0d958e2c00e9cdf90a66b15df918cd22e3c408b0f793d913fc7626
 ```
 
-## Missing methods
+## Server mode
 ```
-create-tx
+git clone git@github.com:xboston/php-metahash.git
+cd php-metahash
+composer install --no-dev
+php -S localhost:8000
+
+open browser: http://localhost:8000/
 ```
+
+![](https://raw.githubusercontent.com/xboston/php-metahash/master/media/browser.png)
 
 ## API
 [Read more](https://github.com/metahashorg/crypt_example_php/wiki/API)
