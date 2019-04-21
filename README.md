@@ -34,9 +34,14 @@ cd examples
 php -S localhost:8000
 ```
 
-open in browser: http://localhost:8000/
+open in browser: http://localhost:8000/ 
 
 ![](https://raw.githubusercontent.com/xboston/php-metahash/master/media/browser.png)
+
+
+or http://localhost:8000/wallets.php
+
+![](https://raw.githubusercontent.com/xboston/php-metahash/master/media/wallets.png)
 
 ## API
 [Read more](https://github.com/metahashorg/crypt_example_php/wiki/API)
