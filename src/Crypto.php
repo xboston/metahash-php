@@ -1,6 +1,9 @@
 <?php declare(strict_types=1);
+/**
+ * Copyright (c) 2019.
+ */
 
-namespace Metahash;
+namespace MetaHash;
 
 use Exception;
 
@@ -49,7 +52,7 @@ class Crypto
                 \curl_setopt($curl, CURLOPT_HTTPGET, false);
 
                 $result = \curl_exec($curl);
-                if (\strstr($result, 'Transaction accapted.')) {
+                if (\strstr($result, 'Transaction accepted.')) {
                     return true;
                 }
             }
@@ -176,20 +179,28 @@ class Crypto
             $query = \json_encode($query);
             $url = $this->getConnectionAddress('TORRENT');
 
-
             if ($url) {
                 $curl = $this->curl;
                 \curl_setopt($curl, CURLOPT_URL, $url);
                 \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
                 \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-                \curl_setopt($curl, CURLOPT_TIMEOUT, 3);
+                \curl_setopt($curl, CURLOPT_TIMEOUT, 0);
                 \curl_setopt($curl, CURLOPT_POST, 1);
                 \curl_setopt($curl, CURLOPT_HTTPGET, false);
                 \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
+/*                \curl_setopt($curl, CURLOPT_VERBOSE, true);*/
+
 
                 $result = \curl_exec($curl);
 
-                $result = \json_decode($result, true);
+                if ($result === FALSE) {
+
+                    echo "cURL Error: " . curl_error($curl);
+
+                    return array();
+
+                }
+                $result = \json_decode($result,true);
 
                 return $result;
             }
@@ -292,5 +303,21 @@ class Crypto
     public function sign($sign_text, $private_key)
     {
         return $this->ecdsa->sign($sign_text, $private_key);
+    }
+
+    public function getBlockByNumber(int $number,int $type) {
+        try {
+            $result= $this->queryTorrent('get-block-by-number',['number'=>$number,'type'=>$type]);
+        } catch (Exception $exception) {
+            var_dump($exception->getTrace());
+        }
+    }
+
+    public function getBlockByHash(string $hash,int $type) {
+        try {
+            $result= $this->queryTorrent('get-block-by-hash',['hash'=>$hash,'type'=>$type]);
+        } catch (Exception $exception) {
+            var_dump($exception->getTrace());
+        }
     }
 }
