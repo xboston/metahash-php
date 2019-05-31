@@ -305,7 +305,7 @@ class Crypto
             return $this->queryTorrent('get-block-by-number', ['number' => $number, 'type' => $type]);
         } catch (Exception $exception) {
             \var_dump($exception->getTrace());
-            return array ();
+            return [];
         }
     }
 
@@ -315,7 +315,7 @@ class Crypto
             return $this->queryTorrent('get-block-by-hash', ['hash' => $hash, 'type' => $type]);
         } catch (Exception $exception) {
             \var_dump($exception->getTrace());
-            return array ();
+            return [];
         }
     }
 }
