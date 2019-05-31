@@ -16,9 +16,9 @@
         }
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.14",
+        "friendsofphp/php-cs-fixer": "^2.15",
         "overtrue/phplint": "^1.1",
-        "phpstan/phpstan": "^0.11.4",
+        "phpstan/phpstan": "^0.11",
         "squizlabs/php_codesniffer": "^3.4"
     }
 }
