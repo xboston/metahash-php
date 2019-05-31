@@ -188,19 +188,17 @@ class Crypto
                 \curl_setopt($curl, CURLOPT_POST, 1);
                 \curl_setopt($curl, CURLOPT_HTTPGET, false);
                 \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
-/*                \curl_setopt($curl, CURLOPT_VERBOSE, true);*/
+                /*                \curl_setopt($curl, CURLOPT_VERBOSE, true);*/
 
 
                 $result = \curl_exec($curl);
 
-                if ($result === FALSE) {
+                if ($result === false) {
+                    echo 'cURL Error: ' . \curl_error($curl);
 
-                    echo "cURL Error: " . curl_error($curl);
-
-                    return array();
-
+                    return [];
                 }
-                $result = \json_decode($result,true);
+                $result = \json_decode($result, true);
 
                 return $result;
             }
@@ -305,19 +303,21 @@ class Crypto
         return $this->ecdsa->sign($sign_text, $private_key);
     }
 
-    public function getBlockByNumber(int $number,int $type) {
+    public function getBlockByNumber(int $number, int $type)
+    {
         try {
-            $result= $this->queryTorrent('get-block-by-number',['number'=>$number,'type'=>$type]);
+            $result= $this->queryTorrent('get-block-by-number', ['number'=>$number,'type'=>$type]);
         } catch (Exception $exception) {
-            var_dump($exception->getTrace());
+            \var_dump($exception->getTrace());
         }
     }
 
-    public function getBlockByHash(string $hash,int $type) {
+    public function getBlockByHash(string $hash, int $type)
+    {
         try {
-            $result= $this->queryTorrent('get-block-by-hash',['hash'=>$hash,'type'=>$type]);
+            $result= $this->queryTorrent('get-block-by-hash', ['hash'=>$hash,'type'=>$type]);
         } catch (Exception $exception) {
-            var_dump($exception->getTrace());
+            \var_dump($exception->getTrace());
         }
     }
 }

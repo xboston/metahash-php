@@ -6,12 +6,12 @@ use Metahash\Crypto;
 use Metahash\Ecdsa;
 
 // !!! very bad
-if( isset($_GET) && isset($_GET['address']) ){
-  $crypto = new Crypto(new Ecdsa());
-  $crypto->net = 'main';
-  $balance = json_encode($crypto->fetchBalance($_GET['address']), JSON_PRETTY_PRINT);
-}else{
-  $balance = false;
+if (isset($_GET) && isset($_GET['address'])) {
+    $crypto = new Crypto(new Ecdsa());
+    $crypto->net = 'main';
+    $balance = \json_encode($crypto->fetchBalance($_GET['address']), JSON_PRETTY_PRINT);
+} else {
+    $balance = false;
 }
 
 ?>

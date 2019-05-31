@@ -1,4 +1,4 @@
-<?php declare (strict_types = 1);
+<?php declare(strict_types = 1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -9,8 +9,8 @@ $crypto = new Crypto(new Ecdsa());
 $crypto->net = 'main';
 
 $wallets = [
-    "0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833" => "MetaWat.ch",
-    "0x0039f42ad734606d250ea0b0151d4aeab6b4edc6587c4b27ef" => "KuCoin",
+    '0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833' => 'MetaWat.ch',
+    '0x0039f42ad734606d250ea0b0151d4aeab6b4edc6587c4b27ef' => 'KuCoin',
 ];
 
 $results = [];
@@ -19,14 +19,14 @@ $fullDelegated = 0;
 foreach ($wallets as $addr => $name) {
     $balanceData = $crypto->fetchBalance($addr);
 
-    $balance = (isset($balanceData["result"]) && isset($balanceData["result"]["received"])) ? ($balanceData["result"]["received"] - $balanceData["result"]["spent"]) / 1e6 : 0;
-    $delegated = (isset($balanceData["result"]) && isset($balanceData["result"]["delegate"])) ? ($balanceData["result"]["delegate"] - $balanceData["result"]["undelegate"]) / 1e6 : 0;
+    $balance = (isset($balanceData['result']) && isset($balanceData['result']['received'])) ? ($balanceData['result']['received'] - $balanceData['result']['spent']) / 1e6 : 0;
+    $delegated = (isset($balanceData['result']) && isset($balanceData['result']['delegate'])) ? ($balanceData['result']['delegate'] - $balanceData['result']['undelegate']) / 1e6 : 0;
 
     $results[] = [
-        "addr" => $addr,
-        "name" => $name,
-        "balance" => $balance,
-        "delegated" => $delegated,
+        'addr' => $addr,
+        'name' => $name,
+        'balance' => $balance,
+        'delegated' => $delegated,
     ];
 
     $fullBalance += $balance;
@@ -64,10 +64,10 @@ foreach ($wallets as $addr => $name) {
           <tbody>
           <?php foreach ($results as $result): ?>
             <tr>
-              <td><?php echo $result["name"] ?></td>
-              <td><a href="https://metawat.ch/address/<?php echo $result["addr"] ?>"><?php echo $result["addr"] ?></a></td>
-              <td><?php echo $result["balance"] ?></td>
-              <td><?php echo $result["delegated"] ?></td>
+              <td><?php echo $result['name'] ?></td>
+              <td><a href="https://metawat.ch/address/<?php echo $result['addr'] ?>"><?php echo $result['addr'] ?></a></td>
+              <td><?php echo $result['balance'] ?></td>
+              <td><?php echo $result['delegated'] ?></td>
             </tr>
             <?php endforeach?>
           </tbody>
