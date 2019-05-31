@@ -186,17 +186,13 @@ class Crypto
                 \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
                 \curl_setopt($curl, CURLOPT_TIMEOUT, 300);
                 \curl_setopt($curl, CURLOPT_POST, 1);
-                \curl_setopt($curl, CURLOPT_HTTPGET, false);
                 \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
-                /*                \curl_setopt($curl, CURLOPT_VERBOSE, true);*/
-
+                /* curl_setopt($curl, CURLOPT_VERBOSE, true);*/
 
                 $result = \curl_exec($curl);
 
                 if ($result === false) {
-                    echo 'cURL Error: ' . \curl_error($curl);
-
-                    return [];
+                    throw new \Exception('cURL Error: ' . \curl_error($curl));
                 }
                 $result = \json_decode($result, true);
 
