@@ -7,6 +7,7 @@
         "php": ">=7.1",
         "ext-curl": "*",
         "ext-gmp": "*",
+        "ext-json": "*",
         "mdanter/ecc": "^0.5.2"
     },
     "autoload": {
