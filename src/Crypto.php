@@ -3,7 +3,7 @@
  * Copyright (c) 2019.
  */
 
-namespace MetaHash;
+namespace Metahash;
 
 use Exception;
 
