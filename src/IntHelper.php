@@ -40,11 +40,11 @@ class IntHelper
             if ($i < 250) {
                 return self::UInt8($i, $hex);
             } elseif ($i < 65536) {
-                return self::UInt8(250, $hex).self::UInt16($i, $hex);
+                return self::UInt8(250, $hex) . self::UInt16($i, $hex);
             } elseif ($i < 4294967296) {
-                return self::UInt8(251, $hex).self::UInt32($i, $hex);
+                return self::UInt8(251, $hex) . self::UInt32($i, $hex);
             } else {
-                return self::UInt8(252, $hex).self::UInt64($i, $hex);
+                return self::UInt8(252, $hex) . self::UInt64($i, $hex);
             }
         } else {
             $l = \strlen($i);

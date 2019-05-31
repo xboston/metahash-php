@@ -42,7 +42,7 @@ class Crypto
     {
         try {
             if ($host = $this->getConnectionAddress('PROXY')) {
-                $host = $host.'/?act=addWallet&p_addr='.$address;
+                $host = $host . '/?act=addWallet&p_addr=' . $address;
                 $curl = $this->curl;
                 \curl_setopt($curl, CURLOPT_URL, $host);
                 \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -65,7 +65,7 @@ class Crypto
 
     public function getConnectionAddress($node = null)
     {
-        if (isset($this->hosts[$node]) && ! empty($this->hosts[$node])) {
+        if (isset($this->hosts[$node]) && !empty($this->hosts[$node])) {
             return $this->hosts[$node];
         }
 
@@ -92,12 +92,12 @@ class Crypto
             foreach ($list as $val) {
                 switch ($node) {
                     case 'PROXY':
-                        if ($res = $this->checkHost($val['ip'].':'.$node_port)) {
-                            $host_list[$val['ip'].':'.$node_port] = 1;
+                        if ($res = $this->checkHost($val['ip'] . ':' . $node_port)) {
+                            $host_list[$val['ip'] . ':' . $node_port] = 1;
                         }
                         break;
                     case 'TORRENT':
-                        $host_list[$val['ip'].':'.$node_port] = $this->torGetLastBlock($val['ip'].':'.$node_port);
+                        $host_list[$val['ip'] . ':' . $node_port] = $this->torGetLastBlock($val['ip'] . ':' . $node_port);
                         break;
                     default:
                         // empty
@@ -118,7 +118,7 @@ class Crypto
 
     private function checkHost($host): bool
     {
-        if (! empty($host)) {
+        if (!empty($host)) {
             $curl = $this->curl;
             \curl_setopt($curl, CURLOPT_URL, $host);
             \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -139,7 +139,7 @@ class Crypto
 
     private function torGetLastBlock($host)
     {
-        if (! empty($host)) {
+        if (!empty($host)) {
             $curl = $this->curl;
             \curl_setopt($curl, CURLOPT_URL, $host);
             \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -149,7 +149,7 @@ class Crypto
             \curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"get-count-blocks","params":[]}');
             $res = \curl_exec($curl);
 
-            if ($res===false) {
+            if ($res === false) {
                 return 0;
             }
 
@@ -288,7 +288,7 @@ class Crypto
         $data_length = ($data_length > 0) ? $data_length / 2 : 0;
         $e = IntHelper::VarUInt(\intval($data_length), true); // счетчик для даты
 
-        $sign_text = $a.$b.$c.$d.$e.$f;
+        $sign_text = $a . $b . $c . $d . $e . $f;
 
 
         return \hex2bin($sign_text);
@@ -302,18 +302,20 @@ class Crypto
     public function getBlockByNumber(int $number, int $type)
     {
         try {
-            $result= $this->queryTorrent('get-block-by-number', ['number'=>$number,'type'=>$type]);
+            return $this->queryTorrent('get-block-by-number', ['number' => $number, 'type' => $type]);
         } catch (Exception $exception) {
             \var_dump($exception->getTrace());
+            return array ();
         }
     }
 
     public function getBlockByHash(string $hash, int $type)
     {
         try {
-            $result= $this->queryTorrent('get-block-by-hash', ['hash'=>$hash,'type'=>$type]);
+            return $this->queryTorrent('get-block-by-hash', ['hash' => $hash, 'type' => $type]);
         } catch (Exception $exception) {
             \var_dump($exception->getTrace());
+            return array ();
         }
     }
 }

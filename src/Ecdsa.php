@@ -32,12 +32,12 @@ class Ecdsa
         $private = $this->generator->createPrivateKey();
         $serializer_private = new DerPrivateKeySerializer($this->adapter);
         $data_private = $serializer_private->serialize($private);
-        $result['private'] = '0x'.\bin2hex($data_private);
+        $result['private'] = '0x' . \bin2hex($data_private);
 
         $public = $private->getPublicKey();
         $serializer_public = new DerPublicKeySerializer($this->adapter);
         $data_public = $serializer_public->serialize($public);
-        $result['public'] = '0x'.\bin2hex($data_public);
+        $result['public'] = '0x' . \bin2hex($data_public);
 
 
         return $result;
@@ -54,7 +54,7 @@ class Ecdsa
         $serializer_public = new DerPublicKeySerializer($this->adapter);
         $data_public = $serializer_public->serialize($public);
 
-        return '0x'.\bin2hex($data_public);
+        return '0x' . \bin2hex($data_public);
     }
 
     public function parseBase16($string)
@@ -75,7 +75,7 @@ class Ecdsa
         $hasher = new SignHasher($algo, $this->adapter);
         $hash = $hasher->makeHash($data, $this->generator);
 
-        if (! $rand) {
+        if (!$rand) {
             $random = RandomGeneratorFactory::getHmacRandomGenerator($key, $hash, $algo);
         } else {
             $random = RandomGeneratorFactory::getRandomGenerator();
@@ -89,7 +89,7 @@ class Ecdsa
         $sign = $serializer->serialize($signature);
 
 
-        return '0x'.\bin2hex($sign);
+        return '0x' . \bin2hex($sign);
     }
 
     public function verify($sign, $data, $public_key, $algo = 'sha256'): bool
@@ -123,20 +123,20 @@ class Ecdsa
         $key = $serializer_public->parse($key);
         $x = \gmp_strval($key->getPoint()->getX(), 16);
         $xlen = 64 - \strlen($x);
-        $x = ($xlen > 0) ? \str_repeat('0', $xlen).$x : $x;
+        $x = ($xlen > 0) ? \str_repeat('0', $xlen) . $x : $x;
         $y = \gmp_strval($key->getPoint()->getY(), 16);
         $ylen = 64 - \strlen($y);
-        $y = ($ylen > 0) ? \str_repeat('0', $ylen).$y : $y;
+        $y = ($ylen > 0) ? \str_repeat('0', $ylen) . $y : $y;
 
-        $code = '04'.$x.$y;
+        $code = '04' . $x . $y;
         $code = \hex2bin($code);
         $code = \hex2bin(\hash('sha256', $code));
-        $code = $net.\hash('ripemd160', $code);
+        $code = $net . \hash('ripemd160', $code);
         $code = \hex2bin($code);
         $hash_summ = \hex2bin(\hash('sha256', $code));
         $hash_summ = \hash('sha256', $hash_summ);
         $hash_summ = \substr($hash_summ, 0, 8);
-        $address = \bin2hex($code).$hash_summ;
+        $address = \bin2hex($code) . $hash_summ;
 
 
         return $this->toBase16($address);
@@ -144,12 +144,12 @@ class Ecdsa
 
     public function toBase16($string)
     {
-        return (\strpos($string, '0x') === 0) ? $string : '0x'.$string;
+        return (\strpos($string, '0x') === 0) ? $string : '0x' . $string;
     }
 
     public function checkAdress(string $address): bool
     {
-        if (! empty($address)) {
+        if (!empty($address)) {
             if (\strlen($this->parseBase16($address)) % 2) {
                 return false;
             }
