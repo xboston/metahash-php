@@ -108,7 +108,8 @@ class Crypto
             \arsort($host_list);
             $keys = \array_keys($host_list);
             if (\count($keys)) {
-                return $keys[0];
+                $this->hosts[$node] = $keys[0];
+                return $this->hosts[$node];
             }
         }
 
