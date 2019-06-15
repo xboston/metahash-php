@@ -183,7 +183,7 @@ class Crypto
                 $curl = $this->curl;
                 \curl_setopt($curl, CURLOPT_URL, $url);
                 \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+                \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 300);
                 \curl_setopt($curl, CURLOPT_TIMEOUT, 300);
                 \curl_setopt($curl, CURLOPT_POST, 1);
                 \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
