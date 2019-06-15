@@ -9,6 +9,8 @@ use Exception;
 
 class Crypto
 {
+    const TORRENT_FETCH_HISTORY_LIMIT = 9999;
+
     public $net;
     /**
      * @var Ecdsa
@@ -163,9 +165,33 @@ class Crypto
         return 0;
     }
 
-    public function fetchHistory($address)
+    public function fetchHistory(string $address)
     {
         return $this->queryTorrent('fetch-history', ['address' => $address]);
+    }
+
+    public function fetchLongHistory(string $address)
+    {
+        $result['balance'] = $this->fetchBalance($address)['result'];
+        if ($result['balance']['count_txs'] <= self::TORRENT_FETCH_HISTORY_LIMIT) {
+            $result['history'] = $this->fetchHistory($address)['result'];
+        } else {
+            $result['history'] = [];
+            for ($begin = 1; $begin <= $result['balance']['count_txs']; $begin += self::TORRENT_FETCH_HISTORY_LIMIT) {
+                $result['history'] = array_merge(
+                    $result['history'],
+                    $this->queryTorrent(
+                        'fetch-history',
+                        [
+                            'address' => $address,
+                            'countTx' => self::TORRENT_FETCH_HISTORY_LIMIT,
+                            'beginTx' => $begin
+                        ]
+                    )
+                );
+            }
+        }
+        return $result;
     }
 
     private function queryTorrent($method, $data = [])
