@@ -166,7 +166,7 @@ class Crypto
         return 0;
     }
 
-    public function fetchHistory(string $address, int $beginTx=0, int $countTx=self::TORRENT_FETCH_HISTORY_LIMIT)
+    public function fetchHistory(string $address, int $beginTx=1, int $countTx=self::TORRENT_FETCH_HISTORY_LIMIT)
     {
         if ($countTx > self::TORRENT_FETCH_HISTORY_LIMIT)
             throw new \Exception('Too many transaction in one request. Maximum is ' . self::TORRENT_FETCH_HISTORY_LIMIT);
