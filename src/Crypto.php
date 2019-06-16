@@ -166,29 +166,32 @@ class Crypto
         return 0;
     }
 
-    public function fetchHistory(string $address)
+    public function fetchHistory(string $address, int $beginTx=0, int $countTx=self::TORRENT_FETCH_HISTORY_LIMIT)
     {
-        return $this->queryTorrent('fetch-history', ['address' => $address]);
+        if ($countTx > self::TORRENT_FETCH_HISTORY_LIMIT)
+            throw new \Exception('Too many transaction in one request. Maximum is ' . self::TORRENT_FETCH_HISTORY_LIMIT);
+
+        return $this->queryTorrent(
+            'fetch-history',
+            [
+                'address' => $address,
+                'beginTx' => $beginTx,
+                'countTx' => $countTx
+            ]);
+
     }
 
-    public function fetchLongHistory(string $address)
+    public function fetchFullHistory(string $address)
     {
         $result['balance'] = $this->fetchBalance($address)['result'];
         if ($result['balance']['count_txs'] <= self::TORRENT_FETCH_HISTORY_LIMIT) {
-            $result['history'] = $this->fetchHistory($address)['result'];
+            $result['result'] = $this->fetchHistory($address)['result'];
         } else {
-            $result['history'] = [];
+            $result['result'] = [];
             for ($begin = 1; $begin <= $result['balance']['count_txs']; $begin += self::TORRENT_FETCH_HISTORY_LIMIT) {
-                $result['history'] = array_merge(
-                    $result['history'],
-                    $this->queryTorrent(
-                        'fetch-history',
-                        [
-                            'address' => $address,
-                            'countTx' => self::TORRENT_FETCH_HISTORY_LIMIT,
-                            'beginTx' => $begin
-                        ]
-                    )
+                $result['result'] = array_merge(
+                    $result['result'],
+                    $this->fetchHistory($address, $begin, self::TORRENT_FETCH_HISTORY_LIMIT)
                 );
             }
         }
