@@ -2,6 +2,7 @@
 
 namespace Metahash;
 
+use FG\ASN1\Exception\ParserException;
 use Mdanter\Ecc\Crypto\Signature\Signer;
 use Mdanter\Ecc\Crypto\Signature\SignHasher;
 use Mdanter\Ecc\EccFactory;
@@ -15,13 +16,23 @@ class Ecdsa
     private $adapter;
     private $generator;
 
+    /**
+     * Ecdsa constructor.
+     */
     public function __construct()
     {
         $this->adapter = EccFactory::getAdapter();
         $this->generator = EccFactory::getSecgCurves()->generator256r1();
     }
 
-    public function getKey(): array
+    /**
+     * Metahash key generate
+     *
+     * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
+     *
+     * @return array
+     */
+    public function generateKey(): array
     {
         $result = [
             'private' => null,
@@ -32,18 +43,27 @@ class Ecdsa
         $private = $this->generator->createPrivateKey();
         $serializer_private = new DerPrivateKeySerializer($this->adapter);
         $data_private = $serializer_private->serialize($private);
-        $result['private'] = '0x' . \bin2hex($data_private);
+        $result['private'] = '0x'.\bin2hex($data_private);
 
         $public = $private->getPublicKey();
         $serializer_public = new DerPublicKeySerializer($this->adapter);
         $data_public = $serializer_public->serialize($public);
-        $result['public'] = '0x' . \bin2hex($data_public);
-
+        $result['public'] = '0x'.\bin2hex($data_public);
 
         return $result;
     }
 
-    public function privateToPublic($private_key): ?string
+    /**
+     * Generating a public key
+     *
+     * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
+     *
+     * @param string $private_key
+     *
+     * @return string
+     * @throws ParserException
+     */
+    public function privateToPublic(string $private_key): string
     {
         $serializer_private = new DerPrivateKeySerializer($this->adapter);
         $private_key = $this->parseBase16($private_key);
@@ -54,18 +74,33 @@ class Ecdsa
         $serializer_public = new DerPublicKeySerializer($this->adapter);
         $data_public = $serializer_public->serialize($public);
 
-        return '0x' . \bin2hex($data_public);
+        return '0x'.\bin2hex($data_public);
     }
 
-    public function parseBase16($string)
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    public function parseBase16(string $string): string
     {
-        return (\substr($string, 0, 2) === '0x') ? \substr($string, 2) : $string;
+        return (\strpos($string, '0x') === 0) ? \substr($string, 2) : $string;
     }
 
-    public function sign($data, $private_key, $rand = false, $algo = 'sha256'): string
+    /**
+     * Signature data
+     *
+     * @param string $data
+     * @param string $private_key
+     * @param bool $rand
+     * @param string $algo
+     *
+     * @return string
+     * @throws ParserException
+     */
+    public function sign(string $data, string $private_key, $rand = false, $algo = 'sha256'): string
     {
         $sign = null;
-
 
         $serializer_private = new DerPrivateKeySerializer($this->adapter);
         $private_key = $this->parseBase16($private_key);
@@ -75,7 +110,7 @@ class Ecdsa
         $hasher = new SignHasher($algo, $this->adapter);
         $hash = $hasher->makeHash($data, $this->generator);
 
-        if (!$rand) {
+        if (! $rand) {
             $random = RandomGeneratorFactory::getHmacRandomGenerator($key, $hash, $algo);
         } else {
             $random = RandomGeneratorFactory::getRandomGenerator();
@@ -89,10 +124,23 @@ class Ecdsa
         $sign = $serializer->serialize($signature);
 
 
-        return '0x' . \bin2hex($sign);
+        return '0x'.\bin2hex($sign);
     }
 
-    public function verify($sign, $data, $public_key, $algo = 'sha256'): bool
+    /**
+     * Verify signed data
+     *
+     * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
+     *
+     * @param string $sign
+     * @param string $data
+     * @param string $public_key
+     * @param string $algo
+     *
+     * @return bool
+     * @throws ParserException
+     */
+    public function verify(string $sign, string $data, string $public_key, string $algo = 'sha256'): bool
     {
         $serializer = new DerSignatureSerializer();
         $serializer_public = new DerPublicKeySerializer($this->adapter);
@@ -112,10 +160,19 @@ class Ecdsa
         return $signer->verify($key, $serialized_sign, $hash) ? true : false;
     }
 
-    public function getAdress($key, $net = '00'): string
+    /**
+     * Creating a Metahash address
+     *
+     * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
+     *
+     * @param string $key
+     * @param string $net
+     *
+     * @return string
+     */
+    public function getAdress(string $key, string $net = '00'): string
     {
         $address = null;
-
 
         $serializer_public = new DerPublicKeySerializer($this->adapter);
         $key = $this->parseBase16($key);
@@ -123,50 +180,75 @@ class Ecdsa
         $key = $serializer_public->parse($key);
         $x = \gmp_strval($key->getPoint()->getX(), 16);
         $xlen = 64 - \strlen($x);
-        $x = ($xlen > 0) ? \str_repeat('0', $xlen) . $x : $x;
+        $x = ($xlen > 0) ? \str_repeat('0', $xlen).$x : $x;
         $y = \gmp_strval($key->getPoint()->getY(), 16);
         $ylen = 64 - \strlen($y);
-        $y = ($ylen > 0) ? \str_repeat('0', $ylen) . $y : $y;
+        $y = ($ylen > 0) ? \str_repeat('0', $ylen).$y : $y;
 
-        $code = '04' . $x . $y;
+        $code = '04'.$x.$y;
         $code = \hex2bin($code);
         $code = \hex2bin(\hash('sha256', $code));
-        $code = $net . \hash('ripemd160', $code);
+        $code = $net.\hash('ripemd160', $code);
         $code = \hex2bin($code);
         $hash_summ = \hex2bin(\hash('sha256', $code));
         $hash_summ = \hash('sha256', $hash_summ);
         $hash_summ = \substr($hash_summ, 0, 8);
-        $address = \bin2hex($code) . $hash_summ;
-
+        $address = \bin2hex($code).$hash_summ;
 
         return $this->toBase16($address);
     }
 
-    public function toBase16($string)
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    public function toBase16(string $string): string
     {
-        return (\strpos($string, '0x') === 0) ? $string : '0x' . $string;
+        return (\strpos($string, '0x') === 0) ? $string : '0x'.$string;
     }
 
+    /**
+     * Validate address
+     *
+     * @param string $address
+     *
+     * @return bool
+     */
     public function checkAdress(string $address): bool
     {
-        if (!empty($address)) {
-            if (\strlen($this->parseBase16($address)) % 2) {
-                return false;
-            }
-
-            $address_hash_summ = \substr($address, \strlen($address) - 8, 8);
-            $code = \substr($address, 0, \strlen($address) - 8);
-            $code = \substr($code, 2);
-            $code = \hex2bin($code);
-            $hash_summ = \hex2bin(\hash('sha256', $code));
-            $hash_summ = \hash('sha256', $hash_summ);
-            $hash_summ = \substr($hash_summ, 0, 8);
-
-            if ($address_hash_summ === $hash_summ) {
-                return true;
-            }
+        if (\strlen($this->parseBase16($address)) % 2) {
+            return false;
         }
 
-        return false;
+        $address_hash_summ = \substr($address, \strlen($address) - 8, 8);
+        $code = \substr($address, 0, \strlen($address) - 8);
+        $code = \substr($code, 2);
+        $code = \hex2bin($code);
+        $hash_summ = \hex2bin(\hash('sha256', $code));
+        $hash_summ = \hash('sha256', $hash_summ);
+        $hash_summ = \substr($hash_summ, 0, 8);
+
+        return $address_hash_summ === $hash_summ;
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    public function str2hex(string $string): string
+    {
+        return \implode(\unpack('H*', $string));
+    }
+
+    /**
+     * @param string $hex
+     *
+     * @return string
+     */
+    public function hex2str(string $hex): string
+    {
+        return \pack('H*', $hex);
     }
 }
