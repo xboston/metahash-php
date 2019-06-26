@@ -190,9 +190,9 @@ class Crypto
         } else {
             $result['result'] = [];
             for ($begin = 1; $begin <= $result['balance']['count_txs']; $begin += self::TORRENT_FETCH_HISTORY_LIMIT) {
-                $result['result'] = \array_merge(
+                $result['result'] = array_merge(
                     $result['result'],
-                    $this->fetchHistory($address, $begin, self::TORRENT_FETCH_HISTORY_LIMIT)
+                    $this->fetchHistory($address, $begin, self::TORRENT_FETCH_HISTORY_LIMIT)['result']
                 );
             }
         }
