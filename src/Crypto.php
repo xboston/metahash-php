@@ -180,7 +180,6 @@ class Crypto
                 'countTxs' => $countTx
             ]
         );
-
     }
 
     public function fetchFullHistory(string $address)
