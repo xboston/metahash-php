@@ -178,8 +178,8 @@ class Crypto
                 'address' => $address,
                 'beginTx' => $beginTx,
                 'countTxs' => $countTx
-            ]);
-
+            ]
+        );
     }
 
     public function fetchFullHistory(string $address)
