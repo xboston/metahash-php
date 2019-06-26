@@ -177,9 +177,10 @@ class Crypto
             [
                 'address' => $address,
                 'beginTx' => $beginTx,
-                'countTx' => $countTx
+                'countTxs' => $countTx
             ]
         );
+
     }
 
     public function fetchFullHistory(string $address)
