@@ -45,6 +45,7 @@ or http://localhost:8000/wallets.php
 - [Original source](https://github.com/metahashorg/crypt_example_php)
 - [Testpage portal](http://testpage.metahash.org/)
 - [Knowledge base](https://developers.metahash.org)
+- [Missing #MetaHash documentation](https://github.com/xboston/metahash-api)
 
 
 ## License
