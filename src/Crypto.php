@@ -86,6 +86,8 @@ class Crypto
      *
      * @return mixed
      * @throws Exception
+     *
+     * @deprecated
      */
     public function fetchFullHistory(string $address)
     {
