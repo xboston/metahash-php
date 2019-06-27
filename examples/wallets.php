@@ -2,11 +2,11 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Metahash\Crypto;
-use Metahash\Ecdsa;
+use Metahash\MetaHash;
+use Metahash\MetaHashCrypto;
 
-$crypto = new Crypto(new Ecdsa());
-$crypto->net = 'main';
+$crypto = new MetaHash(new MetaHashCrypto());
+$crypto->network = 'main';
 
 $wallets = [
     '0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833' => 'MetaWat.ch',
@@ -38,7 +38,7 @@ foreach ($wallets as $addr => $name) {
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>MetaHash - wallet balance</title>
+  <title>#MetaHash - wallet balance</title>
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">

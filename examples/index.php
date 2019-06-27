@@ -2,13 +2,13 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use Metahash\Crypto;
-use Metahash\Ecdsa;
+use Metahash\MetaHash;
+use Metahash\MetaHashCrypto;
 
 // !!! very bad
 if (isset($_GET['address'])) {
-    $crypto = new Crypto(new Ecdsa());
-    $crypto->net = 'main';
+    $crypto = new MetaHash(new MetaHashCrypto());
+    $crypto->network = 'main';
     $balance = \json_encode($crypto->fetchBalance($_GET['address']), JSON_PRETTY_PRINT);
 } else {
     $balance = false;
@@ -19,7 +19,7 @@ if (isset($_GET['address'])) {
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>MetaHash php api</title>
+  <title>#MetaHash php api</title>
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
