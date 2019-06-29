@@ -64,7 +64,7 @@ foreach ($wallets as $addr => $name) {
             <?php foreach ($results as $result) : ?>
             <tr>
               <td><?php echo $result['name'] ?></td>
-              <td><a href="https://metawat.ch/address/<?php echo $result['addr'] ?>"><?php echo $result['addr'] ?></a></td>
+              <td><a href="https://metawat.ch/address/<?php echo $result['addr'] ?>" target="_blank"><?php echo $result['addr'] ?></a></td>
               <td><?php echo $result['balance'] ?></td>
               <td><?php echo $result['delegated'] ?></td>
             </tr>

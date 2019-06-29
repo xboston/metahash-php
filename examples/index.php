@@ -30,7 +30,7 @@ if (isset($_GET['address'])) {
   <div class="container">
     <div class="row">
       <div class="column" style="margin-top: 25%">
-        <h4>fetch-balance example</h4>
+        <h4>fetch-balance example | <a href="/wallets.php">wallets example</a></h4>
         <form method="GET">
           <div class="row">
             <div class="columns">
