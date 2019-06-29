@@ -101,10 +101,16 @@ class MetaHash
      *
      * @param string $address
      *
+     * @param bool $fast
+     *
      * @return bool
      */
-    public function checkAddress(string $address): bool
+    public function checkAddress(string $address, bool $fast = false): bool
     {
+        if ($fast) {
+            return \strpos($address, '0x0') === 0 && \strlen($address) === 52;
+        }
+
         return $this->getEcdsa()->checkAdress($address);
     }
 
