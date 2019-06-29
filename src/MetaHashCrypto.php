@@ -6,6 +6,8 @@ use FG\ASN1\Exception\ParserException;
 use Mdanter\Ecc\Crypto\Signature\Signer;
 use Mdanter\Ecc\Crypto\Signature\SignHasher;
 use Mdanter\Ecc\EccFactory;
+use Mdanter\Ecc\Math\GmpMathInterface;
+use Mdanter\Ecc\Primitives\GeneratorPoint;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
 use Mdanter\Ecc\Serializer\PrivateKey\DerPrivateKeySerializer;
 use Mdanter\Ecc\Serializer\PublicKey\DerPublicKeySerializer;
@@ -18,7 +20,13 @@ use Mdanter\Ecc\Serializer\Signature\DerSignatureSerializer;
  */
 class MetaHashCrypto
 {
+    /**
+     * @var GmpMathInterface
+     */
     private $adapter;
+    /**
+     * @var GeneratorPoint
+     */
     private $generator;
 
     /**
@@ -285,5 +293,37 @@ class MetaHashCrypto
     public function hex2str(string $hex): string
     {
         return \pack('H*', $hex);
+    }
+
+    /**
+     * @return GmpMathInterface
+     */
+    public function getAdapter(): GmpMathInterface
+    {
+        return $this->adapter;
+    }
+
+    /**
+     * @param GmpMathInterface $adapter
+     */
+    public function setAdapter(GmpMathInterface $adapter): void
+    {
+        $this->adapter = $adapter;
+    }
+
+    /**
+     * @return GeneratorPoint
+     */
+    public function getGenerator(): GeneratorPoint
+    {
+        return $this->generator;
+    }
+
+    /**
+     * @param GeneratorPoint $generator
+     */
+    public function setGenerator(GeneratorPoint $generator): void
+    {
+        $this->generator = $generator;
     }
 }

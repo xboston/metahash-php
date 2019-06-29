@@ -21,7 +21,6 @@ try {
     $metaHash = new MetaHash();
     $metaHash->setNetwork($args['net']);
 
-
     switch ($args['method']) {
         case 'generate':
             $metaHash->setEcdsa(new MetaHashCrypto());
