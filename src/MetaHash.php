@@ -7,6 +7,9 @@ namespace Metahash;
 
 use Exception;
 use FG\ASN1\Exception\ParserException;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\GuzzleException;
+use RuntimeException;
 
 /**
  * Class MetaHash
@@ -17,8 +20,9 @@ class MetaHash
 {
     public const HISTORY_LIMIT = 9999;
 
-    private const CURLOPT_CONNECTTIMEOUT = 2;
-    private const CURLOPT_TIMEOUT = 300;
+    private const CONNECT_TIMEOUT = 2;
+    private const TIMEOUT = 150;
+    private const DEBUG = false;
 
     public const NODE_PROXY = 'PROXY';
     public const NODE_TORRENT = 'TORRENT';
@@ -26,15 +30,11 @@ class MetaHash
     /**
      * @var string
      */
-    public $network;
+    private $network;
     /**
      * @var MetaHashCrypto
      */
     private $ecdsa;
-    /**
-     * @var false|resource
-     */
-    private $curl;
     /**
      * @var array
      */
@@ -47,16 +47,23 @@ class MetaHash
      * @var array
      */
     private $hosts = [];
+    /**
+     * @var GuzzleClient
+     */
+    private $client;
 
     /**
      * Crypto constructor.
      *
-     * @param MetaHashCrypto $ecdsa
      */
-    public function __construct(MetaHashCrypto $ecdsa)
+    public function __construct()
     {
-        $this->ecdsa = $ecdsa;
-        $this->curl = \curl_init();
+        $guzzleOptions = [
+            'timeout'         => self::TIMEOUT,
+            'connect_timeout' => self::CONNECT_TIMEOUT,
+            'debug'           => self::DEBUG,
+        ];
+        $this->client = new GuzzleClient($guzzleOptions);
     }
 
     /**
@@ -66,7 +73,27 @@ class MetaHash
      */
     public function generateKey(): array
     {
-        return $this->ecdsa->generateKey();
+        return $this->getEcdsa()->generateKey();
+    }
+
+    /**
+     * @return MetaHashCrypto
+     */
+    public function getEcdsa(): MetaHashCrypto
+    {
+        if ($this->ecdsa === null) {
+            $this->ecdsa = new MetaHashCrypto();
+        }
+
+        return $this->ecdsa;
+    }
+
+    /**
+     * @param MetaHashCrypto $ecdsa
+     */
+    public function setEcdsa(MetaHashCrypto $ecdsa): void
+    {
+        $this->ecdsa = $ecdsa;
     }
 
     /**
@@ -78,84 +105,51 @@ class MetaHash
      */
     public function checkAddress(string $address): bool
     {
-        return $this->ecdsa->checkAdress($address);
+        return $this->getEcdsa()->checkAdress($address);
     }
 
     /**
+     * Get address transaction history
+     *
+     * @see https://github.com/xboston/metahash-api#fetch-history
+     *
      * @param string $address
+     * @param int $beginTx
+     * @param int $countTx
      *
-     * @return mixed
-     * @throws Exception
-     *
-     * @deprecated
+     * @return bool|mixed|string
+     * @throws GuzzleException
      */
-    public function fetchFullHistory(string $address)
+    public function fetchHistory(string $address, int $beginTx = 0, int $countTx = self::HISTORY_LIMIT)
     {
-        $result['balance'] = $this->fetchBalance($address)['result'];
-        if ($result['balance']['count_txs'] <= self::HISTORY_LIMIT) {
-            $result['result'] = $this->fetchHistory($address)['result'];
-        } else {
-            $result['result'] = [];
-            for ($begin = 1; $begin <= $result['balance']['count_txs']; $begin += self::HISTORY_LIMIT) {
-                // @todo need fix
-                $result['result'] = \array_merge(
-                    $result['result'],
-                    $this->fetchHistory($address, $begin, self::HISTORY_LIMIT)['result']
-                );
-            }
+        if ($countTx > self::HISTORY_LIMIT) {
+            throw new RuntimeException('Too many transaction. Maximum is '.self::HISTORY_LIMIT);
         }
 
-        return $result;
-    }
-
-    /**
-     * @see https://github.com/xboston/metahash-api#fetch-balance
-     *
-     * @param string $address
-     *
-     * @return array
-     * @throws Exception
-     */
-    public function fetchBalance(string $address): array
-    {
-        return $this->queryTorrent('fetch-balance', ['address' => $address]);
+        return $this->queryTorrent(
+            'fetch-history',
+            [
+                'address'  => $address,
+                'beginTx'  => $beginTx,
+                'countTxs' => $countTx,
+            ]
+        );
     }
 
     /**
      * Send request to torrent node
      *
      * @param string $method
-     * @param array $data
+     * @param array $params
      *
      * @return array
-     * @throws Exception
+     * @throws GuzzleException
      */
-    public function queryTorrent(string $method, array $data = []): array
+    public function queryTorrent(string $method, array $params = []): array
     {
         $url = $this->getConnectionAddress(self::NODE_TORRENT);
 
-        $query = [
-            'id'     => \time(),
-            'method' => \trim($method),
-            'params' => $data,
-        ];
-        $query = \json_encode($query);
-
-        $curl = $this->curl;
-        \curl_setopt($curl, CURLOPT_URL, $url);
-        \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, self::CURLOPT_CONNECTTIMEOUT);
-        \curl_setopt($curl, CURLOPT_TIMEOUT, self::CURLOPT_TIMEOUT);
-        \curl_setopt($curl, CURLOPT_POST, 1);
-        \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
-
-        $result = \curl_exec($curl);
-
-        if ($result === false) {
-            throw new \RuntimeException('cURL Error: '.\curl_error($curl));
-        }
-
-        return \json_decode($result, true);
+        return $this->query($url, $method, $params);
     }
 
     /**
@@ -167,6 +161,7 @@ class MetaHash
      *
      * @return mixed
      * @throws Exception
+     * @throws GuzzleException
      */
     public function getConnectionAddress(string $nodeName)
     {
@@ -184,7 +179,7 @@ class MetaHash
                 $nodePort = $this->torrent['port'];
                 break;
             default:
-                throw new \RuntimeException('Unknown node type. Type '.$nodeName);
+                throw new RuntimeException('Unknown node type. Type '.$nodeName);
                 break;
         }
 
@@ -197,7 +192,7 @@ class MetaHash
             }
         }
 
-        throw new \RuntimeException('The nodes is not available. Maybe you have problems with DNS.');
+        throw new RuntimeException('The nodes is not available. Maybe you have problems with DNS.');
     }
 
     /**
@@ -206,46 +201,44 @@ class MetaHash
      * @param string $host
      *
      * @return bool
+     * @throws GuzzleException
      */
     public function checkHost(string $host): bool
     {
-        $curl = $this->curl;
-        \curl_setopt($curl, CURLOPT_URL, $host);
-        \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, self::CURLOPT_CONNECTTIMEOUT);
-        \curl_setopt($curl, CURLOPT_TIMEOUT, self::CURLOPT_TIMEOUT);
-        \curl_setopt($curl, CURLOPT_NOBODY, true);
-        \curl_exec($curl);
-        $code = \curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        try {
+            $response = $this->client->request('HEAD', $host);
+            $code = $response->getStatusCode();
 
-        return ($code > 0 && $code < 500);
+            return ($code > 0 && $code < 500);
+        } catch (Exception $e) {
+            return $e->getCode() === 400;
+        }
     }
 
     /**
-     * Get address transaction history
+     * @param string $url
+     * @param string $method
+     * @param array $params
      *
-     * @see https://github.com/xboston/metahash-api#fetch-history
-     *
-     * @param string $address
-     * @param int $beginTx
-     * @param int $countTx
-     *
-     * @return bool|mixed|string
-     * @throws Exception
+     * @return array
+     * @throws GuzzleException
      */
-    public function fetchHistory(string $address, int $beginTx = 0, int $countTx = self::HISTORY_LIMIT)
+    private function query(string $url, string $method, array $params = []): array
     {
-        if ($countTx > self::HISTORY_LIMIT) {
-            throw new \RuntimeException('Too many transaction in one request. Maximum is '.self::HISTORY_LIMIT);
+        $query = [
+            'id'     => \time(),
+            'method' => \trim($method),
+            'params' => $params,
+        ];
+        $query = \json_encode($query);
+
+        $response = $this->client->request('POST', $url, ['body' => $query]);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new RuntimeException('QueryTorrent Error: '.$response->getBody()->getContents());
         }
 
-        return $this->queryTorrent(
-            'fetch-history',
-            [
-                'address'  => $address,
-                'beginTx'  => $beginTx,
-                'countTxs' => $countTx,
-            ]
-        );
+        return \json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -253,28 +246,13 @@ class MetaHash
      *
      * @see https://github.com/xboston/metahash-api#get-count-blocks
      *
-     * @param string $host
      *
-     * @return int
+     * @return array
+     * @throws GuzzleException
      */
-    public function getCountBlocks(string $host): int
+    public function getCountBlocks(): array
     {
-        $curl = $this->curl;
-        \curl_setopt($curl, CURLOPT_URL, $host);
-        \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, self::CURLOPT_CONNECTTIMEOUT);
-        \curl_setopt($curl, CURLOPT_TIMEOUT, self::CURLOPT_TIMEOUT);
-        \curl_setopt($curl, CURLOPT_POST, 1);
-        \curl_setopt($curl, CURLOPT_POSTFIELDS, '{"id":"1","method":"get-count-blocks","params":[]}');
-        $res = \curl_exec($curl);
-
-        if ($res === false) {
-            return 0;
-        }
-
-        $res = \json_decode($res, true);
-
-        return (int)($res['result']['count_blocks'] ?? 0);
+        return $this->queryTorrent('get-count-blocks');
     }
 
     /**
@@ -284,6 +262,7 @@ class MetaHash
      *
      * @return array
      * @throws Exception
+     * @throws GuzzleException
      */
     public function getTx(string $hash): array
     {
@@ -299,12 +278,27 @@ class MetaHash
      *
      * @return int
      * @throws Exception
+     * @throws GuzzleException
      */
     public function getNonce(string $address): int
     {
         $res = $this->fetchBalance($address);
 
         return isset($res['result']['count_spent']) ? (int)$res['result']['count_spent'] + 1 : 1;
+    }
+
+    /**
+     * @see https://github.com/xboston/metahash-api#fetch-balance
+     *
+     * @param string $address
+     *
+     * @return array
+     * @throws Exception
+     * @throws GuzzleException
+     */
+    public function fetchBalance(string $address): array
+    {
+        return $this->queryTorrent('fetch-balance', ['address' => $address]);
     }
 
     /**
@@ -318,7 +312,7 @@ class MetaHash
      */
     public function sign(string $sign_text, string $private_key): string
     {
-        return $this->ecdsa->sign($sign_text, $private_key);
+        return $this->getEcdsa()->sign($sign_text, $private_key);
     }
 
     /**
@@ -329,6 +323,7 @@ class MetaHash
      *
      * @return array
      * @throws Exception
+     * @throws GuzzleException
      */
     public function getBlockByNumber(int $number, int $type): array
     {
@@ -343,6 +338,7 @@ class MetaHash
      *
      * @return array
      * @throws Exception
+     * @throws GuzzleException
      */
     public function getBlockByHash(string $hash, int $type): array
     {
@@ -362,6 +358,7 @@ class MetaHash
      *
      * @return array
      * @throws Exception
+     * @throws GuzzleException
      */
     public function sendTx(string $to, string $value, string $fee = '', int $nonce = 1, string $data = '', string $key = '', string $sign = ''): array
     {
@@ -382,33 +379,64 @@ class MetaHash
      * Send request to proxy node
      *
      * @param string $method
-     * @param array $data
+     * @param array $params
      *
      * @return array
      * @throws Exception
+     * @throws GuzzleException
      */
-    private function queryProxy(string $method, array $data = []): array
+    public function queryProxy(string $method, array $params = []): array
     {
-        $query = [
-            'id'      => \time(),
-            'version' => '2.0',
-            'method'  => \trim($method),
-            'params'  => $data,
-        ];
+        $url = $this->getConnectionAddress(self::NODE_PROXY);
 
-        $query = \json_encode($query);
-        $nodeURL = $this->getConnectionAddress(self::NODE_PROXY);
+        return $this->query($url, $method, $params);
+    }
 
-        $curl = $this->curl;
-        \curl_setopt($curl, CURLOPT_URL, $nodeURL);
-        \curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        \curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, self::CURLOPT_CONNECTTIMEOUT);
-        \curl_setopt($curl, CURLOPT_TIMEOUT, self::CURLOPT_TIMEOUT);
-        \curl_setopt($curl, CURLOPT_POST, 1);
-        \curl_setopt($curl, CURLOPT_POSTFIELDS, $query);
+    /**
+     * @return GuzzleClient
+     */
+    public function getClient(): GuzzleClient
+    {
+        return $this->client;
+    }
 
-        $result = \curl_exec($curl);
+    /**
+     * @param GuzzleClient $client
+     */
+    public function setClient(GuzzleClient $client): void
+    {
+        $this->client = $client;
+    }
 
-        return \json_decode($result, true);
+    /**
+     * @return string
+     */
+    public function getNetwork(): string
+    {
+        return $this->network;
+    }
+
+    /**
+     * @param string $network
+     */
+    public function setNetwork(string $network): void
+    {
+        $this->network = $network;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHosts(): array
+    {
+        return $this->hosts;
+    }
+
+    /**
+     * @param array $hosts
+     */
+    public function setHosts(array $hosts): void
+    {
+        $this->hosts = $hosts;
     }
 }

@@ -18,11 +18,13 @@ try {
         throw new \RuntimeException('method is empty', 1);
     }
 
-    $metaHash = new MetaHash(new MetaHashCrypto());
-    $metaHash->network = $args['net'];
+    $metaHash = new MetaHash();
+    $metaHash->setNetwork($args['net']);
+
 
     switch ($args['method']) {
         case 'generate':
+            $metaHash->setEcdsa(new MetaHashCrypto());
             $result = $metaHash->generateKey();
             echo \json_encode($result, JSON_PRETTY_PRINT);
             break;
@@ -32,11 +34,11 @@ try {
                 throw new \RuntimeException('address is empty', 1);
             }
 
-            if ($metaHash->checkAddress($args['address']) === false) {
+            if ($metaHash->checkAddress((string)$args['address']) === false) {
                 throw new \RuntimeException('invalid address value', 1);
             }
 
-            echo \json_encode($metaHash->fetchBalance($args['address']), JSON_PRETTY_PRINT);
+            echo \json_encode($metaHash->fetchBalance((string)$args['address']), JSON_PRETTY_PRINT);
             break;
 
         case 'fetch-history':
@@ -44,11 +46,11 @@ try {
                 throw new \RuntimeException('address is empty', 1);
             }
 
-            if ($metaHash->checkAddress($args['address']) === false) {
+            if ($metaHash->checkAddress((string)$args['address']) === false) {
                 throw new \RuntimeException('invalid address value', 1);
             }
 
-            echo \json_encode($metaHash->fetchHistory($args['address'], 0, 10), JSON_PRETTY_PRINT);
+            echo \json_encode($metaHash->fetchHistory((string)$args['address'], 0, 10), JSON_PRETTY_PRINT);
             break;
 
         case 'get-tx':
@@ -56,7 +58,7 @@ try {
                 throw new \RuntimeException('hash is empty', 1);
             }
 
-            echo \json_encode($metaHash->getTx($args['hash']), JSON_PRETTY_PRINT);
+            echo \json_encode($metaHash->getTx((string)$args['hash']), JSON_PRETTY_PRINT);
             break;
 
         default:

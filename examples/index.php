@@ -3,12 +3,11 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use Metahash\MetaHash;
-use Metahash\MetaHashCrypto;
 
 // !!! very bad
 if (isset($_GET['address'])) {
-    $crypto = new MetaHash(new MetaHashCrypto());
-    $crypto->network = 'main';
+    $crypto = new MetaHash();
+    $crypto->setNetwork('main');
     $balance = \json_encode($crypto->fetchBalance($_GET['address']), JSON_PRETTY_PRINT);
 } else {
     $balance = false;
