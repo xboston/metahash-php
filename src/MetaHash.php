@@ -177,11 +177,11 @@ class MetaHash
 
         switch ($nodeName) {
             case self::NODE_PROXY:
-                $nodeUrl = \sprintf($this->proxy['url'], $this->network);
+                $nodeUrl = \sprintf($this->proxy['url'], $this->getNetwork());
                 $nodePort = $this->proxy['port'];
                 break;
             case self::NODE_TORRENT:
-                $nodeUrl = \sprintf($this->torrent['url'], $this->network);
+                $nodeUrl = \sprintf($this->torrent['url'], $this->getNetwork());
                 $nodePort = $this->torrent['port'];
                 break;
             default:
@@ -305,6 +305,30 @@ class MetaHash
     public function fetchBalance(string $address): array
     {
         return $this->queryTorrent('fetch-balance', ['address' => $address]);
+    }
+
+    /**
+     * @see https://github.com/xboston/metahash-api#fetch-balances
+     *
+     * @param array $addresses
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function fetchBalances(array $addresses): array
+    {
+        return $this->queryTorrent('fetch-balances', ['addresses' => $addresses]);
+    }
+
+    /**
+     * @see https://github.com/xboston/metahash-api#get-last-txs
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getLastTxs(): array
+    {
+        return $this->queryTorrent('get-last-txs');
     }
 
     /**

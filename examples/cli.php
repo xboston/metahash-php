@@ -10,7 +10,7 @@ try {
     \parse_str(\strtolower(\implode('&', \array_slice($argv, 1))), $args);
 
     $args['method'] = isset($args['method']) && ! empty($args['method']) ? $args['method'] : null;
-    $args['net'] = isset($args['net']) && ! empty($args['net']) ? $args['net'] : 'dev';
+    $args['net'] = isset($args['net']) && ! empty($args['net']) ? $args['net'] : 'main';
     $args['address'] = isset($args['address']) && ! empty($args['address']) ? $args['address'] : null;
     $args['hash'] = isset($args['hash']) && ! empty($args['hash']) ? $args['hash'] : null;
 
@@ -40,6 +40,22 @@ try {
             echo \json_encode($metaHash->fetchBalance((string)$args['address']), JSON_PRETTY_PRINT);
             break;
 
+        case 'fetch-balances':
+            if (empty($args['address'])) {
+                throw new \RuntimeException('address is empty', 1);
+            }
+
+            $addresess = \explode(',', $args['address']);
+
+            \array_walk($addresess, static function ($address) use ($metaHash) {
+                if ($metaHash->checkAddress((string)$address) === false) {
+                    throw new \RuntimeException('invalid address value '.$address, 1);
+                }
+            });
+
+            echo \json_encode($metaHash->fetchBalances($addresess), JSON_PRETTY_PRINT);
+            break;
+
         case 'fetch-history':
             if (empty($args['address'])) {
                 throw new \RuntimeException('address is empty', 1);
@@ -58,6 +74,10 @@ try {
             }
 
             echo \json_encode($metaHash->getTx((string)$args['hash']), JSON_PRETTY_PRINT);
+            break;
+
+        case 'get-last-txs':
+            echo \json_encode($metaHash->getLastTxs(), JSON_PRETTY_PRINT);
             break;
 
         default:

@@ -31,9 +31,11 @@ git clone git@github.com:xboston/php-metahash.git
 cd php-metahash
 composer install --no-dev
 php examples/cli.php method=generate
-php examples/cli.php method=fetch-balance net=main address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
-php examples/cli.php method=fetch-history net=main address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
-php examples/cli.php method=get-tx net=main hash=bc4a521c1d0d958e2c00e9cdf90a66b15df918cd22e3c408b0f793d913fc7626
+php examples/cli.php method=fetch-balance address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
+php examples/cli.php method=fetch-balances address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833,0x0039f42ad734606d250ea0b0151d4aeab6b4edc6587c4b27ef
+php examples/cli.php method=fetch-history address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
+php examples/cli.php method=get-tx  hash=bc4a521c1d0d958e2c00e9cdf90a66b15df918cd22e3c408b0f793d913fc7626
+php examples/cli.php method=get-last-txs
 ```
 
 ### Server mode examples
