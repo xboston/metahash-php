@@ -1,4 +1,4 @@
-# Metahash PHP
+# MetaHash PHP
 
 PHP library for [#MetaHash](https://metahash.org ) blockchain
 
