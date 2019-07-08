@@ -68,7 +68,6 @@ class MetaHash
             'debug'           => self::DEBUG,
         ];
         $this->setClient(new GuzzleClient($guzzleOptions));
-
         $this->setNetwork(self::NETWORK_MAIN);
     }
 

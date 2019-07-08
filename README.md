@@ -9,6 +9,30 @@ PHP library for [#MetaHash](https://metahash.org ) blockchain
 - ext-curl
 - composer
 
+### Information
+
+- [Missing #MetaHash API documentation](https://github.com/xboston/metahash-api)
+- [Original source](https://github.com/metahashorg/crypt_example_php)
+- [Knowledge base](https://developers.metahash.org)
+- [Testpage portal](http://testpage.metahash.org/)
+
+### Methods
+
+- [x] fetch-balance
+- [x] fetch-balances
+- [x] fetch-history
+- [x] get-tx
+- [x] get-block-by-hash
+- [x] get-block-by-number
+- [x] get-last-txs
+- [] get-blocks
+- [] get-dump-block-by-number
+- [] get-dump-block-by-hash
+- [x] get-count-blocks
+- [] status
+- [x] mhc_send
+- [] getinfo
+
 ### Usage
 
 ### PHP examples
@@ -16,7 +40,6 @@ PHP library for [#MetaHash](https://metahash.org ) blockchain
 <?php
 
 use Metahash\MetaHash;
-use Metahash\MetaHashCrypto;
 
 $metaHash = new MetaHash();
 $balance = $metaHash->fetchBalance('0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833');
@@ -54,14 +77,6 @@ open in browser: http://localhost:8000/
 or http://localhost:8000/wallets.php
 
 ![](https://raw.githubusercontent.com/xboston/php-metahash/master/media/wallets.png)
-
-### More data
-
-- [Original source](https://github.com/metahashorg/crypt_example_php)
-- [Testpage portal](http://testpage.metahash.org/)
-- [Knowledge base](https://developers.metahash.org)
-- [Missing #MetaHash documentation](https://github.com/xboston/metahash-api)
-
 
 ## License
 
