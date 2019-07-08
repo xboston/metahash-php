@@ -5,7 +5,6 @@ require __DIR__ . '/../vendor/autoload.php';
 use Metahash\MetaHash;
 
 $crypto = new MetaHash();
-$crypto->setNetwork('main');
 
 $wallets = [
     '0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833' => 'MetaWat.ch',

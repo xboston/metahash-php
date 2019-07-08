@@ -7,7 +7,6 @@ use Metahash\MetaHash;
 // !!! very bad
 if (isset($_GET['address'])) {
     $crypto = new MetaHash();
-    $crypto->setNetwork('main');
     $balance = \json_encode($crypto->fetchBalance($_GET['address']), JSON_PRETTY_PRINT);
 } else {
     $balance = false;

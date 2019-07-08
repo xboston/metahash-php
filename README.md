@@ -19,8 +19,6 @@ use Metahash\MetaHash;
 use Metahash\MetaHashCrypto;
 
 $metaHash = new MetaHash();
-$metaHash->setNetwork('main');
-
 $balance = $metaHash->fetchBalance('0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833');
 print_r($balance);
 ```

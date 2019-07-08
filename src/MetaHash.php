@@ -27,6 +27,10 @@ class MetaHash
     public const NODE_PROXY = 'PROXY';
     public const NODE_TORRENT = 'TORRENT';
 
+    public const NETWORK_MAIN = 'main';
+    public const NETWORK_TEST = 'test';
+    public const NETWORK_DEV = 'dev';
+
     /**
      * @var string
      */
@@ -63,7 +67,9 @@ class MetaHash
             'connect_timeout' => self::CONNECT_TIMEOUT,
             'debug'           => self::DEBUG,
         ];
-        $this->client = new GuzzleClient($guzzleOptions);
+        $this->setClient(new GuzzleClient($guzzleOptions));
+
+        $this->setNetwork(self::NETWORK_MAIN);
     }
 
     /**
