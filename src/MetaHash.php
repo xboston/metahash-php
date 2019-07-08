@@ -38,7 +38,7 @@ class MetaHash
     /**
      * @var MetaHashCrypto
      */
-    private $ecdsa;
+    private $metahashCrypto;
     /**
      * @var array
      */
@@ -74,31 +74,33 @@ class MetaHash
     /**
      * Metahash key generate
      *
+     * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
+     *
      * @return array
      */
     public function generateKey(): array
     {
-        return $this->getEcdsa()->generateKey();
+        return $this->getMetahashCrypto()->generateKey();
     }
 
     /**
      * @return MetaHashCrypto
      */
-    public function getEcdsa(): MetaHashCrypto
+    public function getMetahashCrypto(): MetaHashCrypto
     {
-        if ($this->ecdsa === null) {
-            $this->ecdsa = new MetaHashCrypto();
+        if ($this->metahashCrypto === null) {
+            $this->metahashCrypto = new MetaHashCrypto();
         }
 
-        return $this->ecdsa;
+        return $this->metahashCrypto;
     }
 
     /**
-     * @param MetaHashCrypto $ecdsa
+     * @param MetaHashCrypto $metahashCrypto
      */
-    public function setEcdsa(MetaHashCrypto $ecdsa): void
+    public function setMetahashCrypto(MetaHashCrypto $metahashCrypto): void
     {
-        $this->ecdsa = $ecdsa;
+        $this->metahashCrypto = $metahashCrypto;
     }
 
     /**
@@ -116,7 +118,7 @@ class MetaHash
             return \strpos($address, '0x0') === 0 && \strlen($address) === 52;
         }
 
-        return $this->getEcdsa()->checkAdress($address);
+        return $this->getMetahashCrypto()->checkAdress($address);
     }
 
     /**
@@ -125,13 +127,13 @@ class MetaHash
      * @see https://github.com/xboston/metahash-api#fetch-history
      *
      * @param string $address
-     * @param int $beginTx
      * @param int $countTx
+     * @param int $beginTx
      *
      * @return bool|mixed|string
      * @throws GuzzleException
      */
-    public function fetchHistory(string $address, int $beginTx = 0, int $countTx = self::HISTORY_LIMIT)
+    public function fetchHistory(string $address, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0)
     {
         if ($countTx > self::HISTORY_LIMIT) {
             throw new RuntimeException('Too many transaction. Maximum is '.self::HISTORY_LIMIT);
@@ -141,8 +143,8 @@ class MetaHash
             'fetch-history',
             [
                 'address'  => $address,
-                'beginTx'  => $beginTx,
                 'countTxs' => $countTx,
+                'beginTx'  => $beginTx,
             ]
         );
     }
@@ -355,15 +357,15 @@ class MetaHash
     /**
      * Signature data
      *
-     * @param string $sign_text
-     * @param string $private_key
+     * @param string $signText
+     * @param string $privateKey
      *
      * @return string
      * @throws ParserException
      */
-    public function sign(string $sign_text, string $private_key): string
+    public function sign(string $signText, string $privateKey): string
     {
-        return $this->getEcdsa()->sign($sign_text, $private_key);
+        return $this->getMetahashCrypto()->sign($signText, $privateKey);
     }
 
     /**
@@ -386,26 +388,35 @@ class MetaHash
      *
      * @param string $hash
      * @param int $type
+     * @param int $countTx
+     * @param int $beginTx
      *
      * @return array
-     * @throws Exception
      * @throws GuzzleException
      */
-    public function getBlockByHash(string $hash, int $type): array
+    public function getBlockByHash(string $hash, int $type, int $countTx = null, int $beginTx = null): array
     {
-        return $this->queryTorrent('get-block-by-hash', ['hash' => $hash, 'type' => $type]);
+        return $this->queryTorrent(
+            'get-block-by-hash',
+            [
+                'hash'     => $hash,
+                'type'     => $type,
+                'countTxs' => $countTx,
+                'beginTx'  => $beginTx,
+            ]
+        );
     }
 
     /**
      * @see https://github.com/xboston/metahash-api#get-blocks
      *
-     * @param int $beginBlock
      * @param int $countBlocks
+     * @param int $beginBlock
      *
      * @return array
      * @throws GuzzleException
      */
-    public function getBlocks(int $beginBlock, int $countBlocks): array
+    public function getBlocks(int $countBlocks, int $beginBlock): array
     {
         return $this->queryTorrent('get-blocks', ['beginBlock' => $beginBlock, 'countBlocks' => $countBlocks]);
     }
@@ -438,15 +449,15 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#get-dump-block-by-hash
      *
-     * @param int $number
+     * @param string $hash
      * @param bool $isHex
      *
      * @return array
      * @throws GuzzleException
      */
-    public function getDumpBlockByHash(int $number, bool $isHex = false): array
+    public function getDumpBlockByHash(string $hash, bool $isHex = false): array
     {
-        return $this->queryTorrent('get-dump-block-by-hash', ['number' => $number, 'isHex' => $isHex]);
+        return $this->queryTorrent('get-dump-block-by-hash', ['hash' => $hash, 'isHex' => $isHex]);
     }
 
     /**
@@ -480,27 +491,30 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#mhc_send
      *
+     * @param string $privateKey
      * @param string $to
-     * @param string $value
-     * @param string $fee
-     * @param int $nonce
+     * @param int $value
      * @param string $data
-     * @param string $key
-     * @param string $sign
+     * @param int $nonce
+     * @param int $fee
      *
      * @return array
-     * @throws Exception
      * @throws GuzzleException
+     * @throws ParserException
      */
-    public function sendTx(string $to, string $value, string $fee = '', int $nonce = 1, string $data = '', string $key = '', string $sign = ''): array
+    public function sendTx(string $privateKey, string $to, int $value, string $data = '', int $nonce = 1, int $fee = 0): array
     {
+        $metaHashCrypto = $this->getMetahashCrypto();
+        $signText = $metaHashCrypto->makeSign($to, $value, $nonce, $fee, $data);
+        $sign = $metaHashCrypto->sign($signText, $privateKey);
+
         $txData = [
             'to'     => $to,
-            'value'  => $value,
-            'fee'    => $fee,
-            'nonce'  => $nonce,
-            'data'   => $data,
-            'pubkey' => $key,
+            'value'  => (string)$value,
+            'fee'    => (string)$fee,
+            'nonce'  => (string)$nonce,
+            'data'   => $metaHashCrypto->str2hex($data),
+            'pubkey' => $metaHashCrypto->privateToPublic($privateKey),
             'sign'   => $sign,
         ];
 

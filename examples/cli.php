@@ -23,7 +23,7 @@ try {
 
     switch ($args['method']) {
         case 'generate':
-            $metaHash->setEcdsa(new MetaHashCrypto());
+            $metaHash->setMetahashCrypto(new MetaHashCrypto());
             $result = $metaHash->generateKey();
             echo \json_encode($result, JSON_PRETTY_PRINT);
             break;

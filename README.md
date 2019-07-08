@@ -33,6 +33,12 @@ PHP library for [#MetaHash](https://metahash.org ) blockchain.
 - [x] mhc_send
 - [x] getinfo
 
+
+### Extra Methods
+- [x] [generateKey](https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network)
+- [x] getNonce
+- [ ] [mhcVerify](https://github.com/metahashorg/signnode-php/blob/master/www/index.php#L68)
+
 ### Usage
 
 ### PHP examples

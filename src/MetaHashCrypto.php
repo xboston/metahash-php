@@ -251,28 +251,29 @@ class MetaHashCrypto
      * @see https://developers.metahash.org/hc/en-us/articles/360003271694-Creating-transactions
      *
      * @param string $address
-     * @param string $value
-     * @param string $nonce
+     * @param int $value
+     * @param int $nonce
      * @param int $fee
      * @param string $data
      *
      * @return bool|string
      */
-    public function makeSign(string $address, string $value, string $nonce, int $fee = 0, string $data = '')
+    public function makeSign(string $address, int $value, int $nonce, int $fee = 0, string $data = '')
     {
-        $a = (\strpos($address, '0x') === 0) ? \substr($address, 2) : $address;
-        $b = IntHelper::VarUInt((int)$value, true);
-        $c = IntHelper::VarUInt((int)$fee, true);
-        $d = IntHelper::VarUInt((int)$nonce, true);
+        $data = $data === '' ? $data : $this->str2hex($data);
 
-        $f = $data;
-        $data_length = \strlen($f);
-        $data_length = ($data_length > 0) ? $data_length / 2 : 0;
-        $e = IntHelper::VarUInt((int)$data_length, true);
+        $addressClear = (\strpos($address, '0x') === 0) ? \substr($address, 2) : $address;
+        $valueUInt = IntHelper::VarUInt($value, true);
+        $feeUInt = IntHelper::VarUInt($fee, true);
+        $nonceUInt = IntHelper::VarUInt($nonce, true);
 
-        $sign_text = $a.$b.$c.$d.$e.$f;
+        $dataLength = \strlen($data);
+        $dataLength = ($dataLength > 0) ? $dataLength / 2 : 0;
+        $dataLengthUInt = IntHelper::VarUInt((int)$dataLength, true);
 
-        return \hex2bin($sign_text);
+        $signText = $addressClear.$valueUInt.$feeUInt.$nonceUInt.$dataLengthUInt.$data;
+
+        return \hex2bin($signText);
     }
 
     /**
