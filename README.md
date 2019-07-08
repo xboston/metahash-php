@@ -1,6 +1,6 @@
 # MetaHash PHP
 
-PHP library for [#MetaHash](https://metahash.org ) blockchain
+PHP library for [#MetaHash](https://metahash.org ) blockchain.
 
 ### Requirements
 
@@ -25,13 +25,13 @@ PHP library for [#MetaHash](https://metahash.org ) blockchain
 - [x] get-block-by-hash
 - [x] get-block-by-number
 - [x] get-last-txs
-- [] get-blocks
-- [] get-dump-block-by-number
-- [] get-dump-block-by-hash
+- [x] get-blocks
+- [x] get-dump-block-by-number
+- [x] get-dump-block-by-hash
 - [x] get-count-blocks
-- [] status
+- [x] status
 - [x] mhc_send
-- [] getinfo
+- [x] getinfo
 
 ### Usage
 

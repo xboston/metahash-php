@@ -207,6 +207,22 @@ class MetaHash
     }
 
     /**
+     * @return string
+     */
+    public function getNetwork(): string
+    {
+        return $this->network;
+    }
+
+    /**
+     * @param string $network
+     */
+    public function setNetwork(string $network): void
+    {
+        $this->network = $network;
+    }
+
+    /**
      * Node availability check
      *
      * @param string $host
@@ -381,6 +397,87 @@ class MetaHash
     }
 
     /**
+     * @see https://github.com/xboston/metahash-api#get-blocks
+     *
+     * @param int $beginBlock
+     * @param int $countBlocks
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getBlocks(int $beginBlock, int $countBlocks): array
+    {
+        return $this->queryTorrent('get-blocks', ['beginBlock' => $beginBlock, 'countBlocks' => $countBlocks]);
+    }
+
+    /**
+     * @see https://github.com/xboston/metahash-api#status
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function status(): array
+    {
+        return $this->queryTorrent('status');
+    }
+
+    /**
+     * @see https://github.com/xboston/metahash-api#get-dump-block-by-number
+     *
+     * @param int $number
+     * @param bool $isHex
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getDumpBlockByNumber(int $number, bool $isHex = false): array
+    {
+        return $this->queryTorrent('get-dump-block-by-number', ['number' => $number, 'isHex' => $isHex]);
+    }
+
+    /**
+     * @see https://github.com/xboston/metahash-api#get-dump-block-by-hash
+     *
+     * @param int $number
+     * @param bool $isHex
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getDumpBlockByHash(int $number, bool $isHex = false): array
+    {
+        return $this->queryTorrent('get-dump-block-by-hash', ['number' => $number, 'isHex' => $isHex]);
+    }
+
+    /**
+     * @see https://github.com/xboston/metahash-api#getinfo
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getInfo(): array
+    {
+        return $this->queryProxy('getinfo');
+    }
+
+    /**
+     * Send request to proxy node
+     *
+     * @param string $method
+     * @param array $params
+     *
+     * @return array
+     * @throws Exception
+     * @throws GuzzleException
+     */
+    public function queryProxy(string $method, array $params = []): array
+    {
+        $url = $this->getConnectionAddress(self::NODE_PROXY);
+
+        return $this->query($url, $method, $params);
+    }
+
+    /**
      * @see https://github.com/xboston/metahash-api#mhc_send
      *
      * @param string $to
@@ -411,23 +508,6 @@ class MetaHash
     }
 
     /**
-     * Send request to proxy node
-     *
-     * @param string $method
-     * @param array $params
-     *
-     * @return array
-     * @throws Exception
-     * @throws GuzzleException
-     */
-    public function queryProxy(string $method, array $params = []): array
-    {
-        $url = $this->getConnectionAddress(self::NODE_PROXY);
-
-        return $this->query($url, $method, $params);
-    }
-
-    /**
      * @return GuzzleClient
      */
     public function getClient(): GuzzleClient
@@ -441,22 +521,6 @@ class MetaHash
     public function setClient(GuzzleClient $client): void
     {
         $this->client = $client;
-    }
-
-    /**
-     * @return string
-     */
-    public function getNetwork(): string
-    {
-        return $this->network;
-    }
-
-    /**
-     * @param string $network
-     */
-    public function setNetwork(string $network): void
-    {
-        $this->network = $network;
     }
 
     /**
