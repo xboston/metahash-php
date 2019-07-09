@@ -84,12 +84,27 @@ php -S localhost:8000
 
 open in browser: http://localhost:8000/ 
 
-![](https://raw.githubusercontent.com/xboston/php-metahash/master/media/browser.png)
+![browser](https://raw.githubusercontent.com/xboston/php-metahash/master/media/browser.png)
 
 
 or http://localhost:8000/wallets.php
 
-![](https://raw.githubusercontent.com/xboston/php-metahash/master/media/wallets.png)
+![wallets](https://raw.githubusercontent.com/xboston/php-metahash/master/media/wallets.png)
+
+
+## Breaking change
+
+- from 0.1.1 to 0.2.0
+```diff
+-public function fetchHistory(string $address, int $beginTx = 0, int $countTx = self::HISTORY_LIMIT)
++public function fetchHistory(string $address, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0)
+
+-public function sendTx(string $to, string $value, string $fee = '', int $nonce = 1, string $data = '', string $key = '', string $sign = '')
++public function sendTx(string $privateKey, string $to, int $value, string $data = '', int $nonce = 1, int $fee = 0)
+
+-public function makeSign(string $address, string $value, string $nonce, int $fee = 0, string $data = '')
++public function makeSign(string $address, int $value, int $nonce, int $fee = 0, string $data = '')
+```
 
 ## License
 
