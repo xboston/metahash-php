@@ -9,6 +9,13 @@ PHP library for [#MetaHash](https://metahash.org ) blockchain.
 - ext-curl
 - composer
 
+### Installation
+You can install this package with Composer. You only need to require xboston/metahash.
+
+```bash
+composer require xboston/metahash
+```
+
 ### Information
 
 - [Missing #MetaHash API documentation](https://github.com/xboston/metahash-api)
@@ -39,6 +46,7 @@ PHP library for [#MetaHash](https://metahash.org ) blockchain.
 - [x] getNonce
 
 ### Usage
+You can find usage examples in the examples/ folder.
 
 ### PHP examples
 ```php
