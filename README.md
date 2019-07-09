@@ -46,9 +46,9 @@ composer require xboston/metahash
 - [x] getNonce
 
 ### Usage
-You can find usage examples in the examples/ folder.
+You can find usage examples in the [examples](https://github.com/xboston/php-metahash/examples) folder.
 
-### PHP examples
+### Examples
 ```php
 <?php
 
@@ -94,7 +94,7 @@ or http://localhost:8000/wallets.php
 
 ## Breaking change
 
-- from 0.1.1 to 0.2.0
+- from v0.1.1 to v0.2.0
 ```diff
 -public function fetchHistory(string $address, int $beginTx = 0, int $countTx = self::HISTORY_LIMIT)
 +public function fetchHistory(string $address, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0)
