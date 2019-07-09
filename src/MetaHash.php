@@ -19,18 +19,24 @@ use RuntimeException;
 class MetaHash
 {
     public const HISTORY_LIMIT = 9999;
-
-    private const CONNECT_TIMEOUT = 2;
-    private const TIMEOUT = 150;
-    private const DEBUG = false;
-
     public const NODE_PROXY = 'PROXY';
     public const NODE_TORRENT = 'TORRENT';
-
     public const NETWORK_MAIN = 'main';
     public const NETWORK_TEST = 'test';
     public const NETWORK_DEV = 'dev';
 
+    /**
+     * @var int
+     */
+    private $connectTimeout = 2;
+    /**
+     * @var int
+     */
+    private $timeout = 150;
+    /**
+     * @var bool
+     */
+    private $debug = false;
     /**
      * @var string
      */
@@ -57,18 +63,65 @@ class MetaHash
     private $client;
 
     /**
-     * Crypto constructor.
-     *
+     * MetaHash constructor.
      */
     public function __construct()
     {
         $guzzleOptions = [
-            'timeout'         => self::TIMEOUT,
-            'connect_timeout' => self::CONNECT_TIMEOUT,
-            'debug'           => self::DEBUG,
+            'timeout'         => $this->getTimeout(),
+            'connect_timeout' => $this->getConnectTimeout(),
+            'debug'           => $this->getDebug(),
         ];
         $this->setClient(new GuzzleClient($guzzleOptions));
         $this->setNetwork(self::NETWORK_MAIN);
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeout(): int
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * @param int $timeout
+     */
+    public function setTimeout(int $timeout): void
+    {
+        $this->timeout = $timeout;
+    }
+
+    /**
+     * @return int
+     */
+    public function getConnectTimeout(): int
+    {
+        return $this->connectTimeout;
+    }
+
+    /**
+     * @param int $connectTimeout
+     */
+    public function setConnectTimeout(int $connectTimeout): void
+    {
+        $this->connectTimeout = $connectTimeout;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDebug(): bool
+    {
+        return $this->debug;
+    }
+
+    /**
+     * @param bool $debug
+     */
+    public function setDebug(bool $debug): void
+    {
+        $this->debug = $debug;
     }
 
     /**

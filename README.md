@@ -1,6 +1,6 @@
-# MetaHash PHP
+# MetaHash API PHP library
 
-PHP library for [#MetaHash](https://metahash.org ) blockchain.
+An unofficial PHP library for [#MetaHash](https://metahash.org ) blockchain.
 
 ### Requirements
 
