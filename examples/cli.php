@@ -65,7 +65,7 @@ try {
                 throw new \RuntimeException('invalid address value', 1);
             }
 
-            echo \json_encode($metaHash->fetchHistory((string)$args['address'], 0, 10), JSON_PRETTY_PRINT);
+            echo \json_encode($metaHash->fetchHistory((string)$args['address'], 10), JSON_PRETTY_PRINT);
             break;
 
         case 'get-tx':
