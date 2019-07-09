@@ -46,7 +46,7 @@ composer require xboston/metahash
 - [x] getNonce
 
 ### Usage
-You can find usage examples in the [examples](https://github.com/xboston/php-metahash/examples) folder.
+You can find usage examples in the [examples](https://github.com/xboston/php-metahash/tree/master/examples) folder.
 
 ### Examples
 ```php
