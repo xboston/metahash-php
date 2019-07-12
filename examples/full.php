@@ -59,7 +59,7 @@ Dump::d('status', $status);
 
 // proxy nodes
 $key = $metaHash->generateKey();
-$sendTx = $metaHash->sendTx($key['private'], '0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833', 1, 'https://github.com/xboston/php-metahash');
+$sendTx = $metaHash->sendTx($key['private'], '0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833', 0, 'https://github.com/xboston/php-metahash');
 Dump::d('sendTx', $sendTx);
 
 $getInfo = $metaHash->getInfo();
