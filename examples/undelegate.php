@@ -2,7 +2,6 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-use Dump\Dump;
 use Metahash\MetaHash;
 
 $youAddress ='0x00e327ebc4691ae115a7146384732308d8bc11280e3922aa44';
@@ -19,4 +18,4 @@ $command = '{"method":"undelegate"}';
 $nonce = $metaHash->getNonce($youAddress);
 $sendTx = $metaHash->sendTx($youPrivateKey, $undelegateNodeAddress, 0, $command, $nonce);
 
-Dump::d('sendTx', $sendTx);
+\var_dump('sendTx', $sendTx);
