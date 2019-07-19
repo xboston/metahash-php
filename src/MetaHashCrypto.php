@@ -35,7 +35,7 @@ class MetaHashCrypto
     public function __construct()
     {
         $this->adapter = EccFactory::getAdapter();
-        $this->generator = EccFactory::getSecgCurves()->generator256r1();
+        $this->generator = EccFactory::getSecgCurves()->generator256k1();
     }
 
     /**
@@ -43,9 +43,11 @@ class MetaHashCrypto
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
      *
+     * @param int $keyType
+     *
      * @return array
      */
-    public function generateKey(): array
+    public function generateKey($keyType = MetaHash::KEY_TYPE_SECP256K1): array
     {
         $result = [
             'private' => null,
@@ -53,7 +55,13 @@ class MetaHashCrypto
             'address' => null,
         ];
 
-        $private = $this->generator->createPrivateKey();
+        $generator = $this->generator;
+
+        if ($keyType === MetaHash::KEY_TYPE_SECP256R1) {
+            $generator = EccFactory::getSecgCurves()->generator256r1();
+        }
+
+        $private = $generator->createPrivateKey();
         $serializerPrivate = new DerPrivateKeySerializer($this->adapter);
         $dataPrivate = $serializerPrivate->serialize($private);
         $result['private'] = '0x'.\bin2hex($dataPrivate);

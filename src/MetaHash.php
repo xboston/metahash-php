@@ -25,6 +25,9 @@ class MetaHash
     public const NETWORK_TEST = 'test';
     public const NETWORK_DEV = 'dev';
 
+    public const KEY_TYPE_SECP256R1 = 0;
+    public const KEY_TYPE_SECP256K1 = 1;
+
     /**
      * @var int
      */
@@ -129,11 +132,13 @@ class MetaHash
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
      *
+     * @param int $keyType
+     *
      * @return array
      */
-    public function generateKey(): array
+    public function generateKey($keyType = MetaHash::KEY_TYPE_SECP256K1): array
     {
-        return $this->getMetahashCrypto()->generateKey();
+        return $this->getMetahashCrypto()->generateKey($keyType);
     }
 
     /**
