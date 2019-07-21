@@ -46,7 +46,7 @@ composer require xboston/metahash
 - [x] getNonce
 
 ### Usage
-You can find usage examples in the [examples](https://github.com/xboston/php-metahash/tree/master/examples) folder.
+You can find usage examples in the [examples](https://github.com/xboston/metahash-php/tree/master/examples) folder.
 
 ### Examples
 ```php
@@ -61,8 +61,8 @@ print_r($balance);
 
 ### Console examples
 ```shell
-git clone git@github.com:xboston/php-metahash.git
-cd php-metahash
+git clone git@github.com:xboston/metahash-php.git
+cd metahash-php
 composer install --no-dev
 php examples/cli.php method=generate
 php examples/cli.php method=fetch-balance address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
@@ -75,8 +75,8 @@ php examples/cli.php method=get-last-txs
 ### Server mode examples
 
 ```
-git clone git@github.com:xboston/php-metahash.git
-cd php-metahash
+git clone git@github.com:xboston/metahash-php.git
+cd metahash-php
 composer install --no-dev
 cd examples
 php -S localhost:8000
@@ -84,12 +84,12 @@ php -S localhost:8000
 
 open in browser: http://localhost:8000/ 
 
-![browser](https://raw.githubusercontent.com/xboston/php-metahash/master/media/browser.png)
+![browser](https://raw.githubusercontent.com/xboston/metahash-php/master/media/browser.png)
 
 
 or http://localhost:8000/wallets.php
 
-![wallets](https://raw.githubusercontent.com/xboston/php-metahash/master/media/wallets.png)
+![wallets](https://raw.githubusercontent.com/xboston/metahash-php/master/media/wallets.png)
 
 
 ## Breaking change
