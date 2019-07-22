@@ -268,8 +268,6 @@ class MetaHashCrypto
      */
     public function makeSign(string $address, int $value, int $nonce, int $fee = 0, string $data = '')
     {
-        $data = $data === '' ? $data : $this->str2hex($data);
-
         $addressClear = (\strpos($address, '0x') === 0) ? \substr($address, 2) : $address;
         $valueUInt = IntHelper::VarUInt($value, true);
         $feeUInt = IntHelper::VarUInt($fee, true);
