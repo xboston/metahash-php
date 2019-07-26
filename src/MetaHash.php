@@ -563,6 +563,7 @@ class MetaHash
     public function sendTx(string $privateKey, string $to, int $value, string $data = '', int $nonce = 1, int $fee = 0): array
     {
         $metaHashCrypto = $this->getMetahashCrypto();
+        $data = $data === '' ? $data : $metaHashCrypto->str2hex($data);
         $signText = $metaHashCrypto->makeSign($to, $value, $nonce, $fee, $data);
         $sign = $metaHashCrypto->sign($signText, $privateKey);
 
@@ -571,7 +572,7 @@ class MetaHash
             'value'  => (string)$value,
             'fee'    => (string)$fee,
             'nonce'  => (string)$nonce,
-            'data'   => $metaHashCrypto->str2hex($data),
+            'data'   => (string)$data,
             'pubkey' => $metaHashCrypto->privateToPublic($privateKey),
             'sign'   => $sign,
         ];
