@@ -1,1 +1,4 @@
 theme: jekyll-theme-cayman
+title: Metahash PHP
+description: An unofficial PHP library for #MetaHash blockchain.
+show_downloads: true
