@@ -357,6 +357,23 @@ class MetaHash
     }
 
     /**
+     * @param string $address
+     * @param int $countTx
+     * @param int $beginTx
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getAddressDelegations(string $address, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0): array
+    {
+        return $this->queryTorrent('get-address-delegations', [
+            'address'  => $address,
+            'countTxs' => $countTx,
+            'beginTx'  => $beginTx,
+        ]);
+    }
+
+    /**
      * Get nonce param for address
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360003271694-Creating-transactions
