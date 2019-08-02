@@ -28,6 +28,7 @@ composer require xboston/metahash
 - [x] fetch-balance
 - [x] fetch-balances
 - [x] fetch-history
+- [x] get-address-delegations
 - [x] get-tx
 - [x] get-block-by-hash
 - [x] get-block-by-number

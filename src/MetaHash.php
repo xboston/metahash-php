@@ -357,6 +357,8 @@ class MetaHash
     }
 
     /**
+     * @see https://github.com/xboston/metahash-api#get-address-delegations
+     *
      * @param string $address
      * @param int $countTx
      * @param int $beginTx
