@@ -86,6 +86,7 @@ php -S localhost:8000
 open in browser: http://localhost:8000/ 
 
 ![browser](https://raw.githubusercontent.com/xboston/metahash-php/master/media/browser.png)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fxboston%2Fmetahash-php.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fxboston%2Fmetahash-php?ref=badge_shield)
 
 
 or http://localhost:8000/wallets.php
@@ -96,3 +97,6 @@ or http://localhost:8000/wallets.php
 ## License
 
 This package is released under the MIT license.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fxboston%2Fmetahash-php.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fxboston%2Fmetahash-php?ref=badge_large)
