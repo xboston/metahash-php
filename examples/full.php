@@ -3,6 +3,7 @@
 require __DIR__.'/../vendor/autoload.php';
 
 use Dump\Dump;
+use Metahash\HistoryFilters;
 use Metahash\MetaHash;
 
 $metaHash = new MetaHash();
@@ -29,6 +30,11 @@ Dump::d('fetchHistory 10', $fetchHistory10);
 
 $fetchHistory1010 = $metaHash->fetchHistory('0x00312d149c348120faffe00ca275d012e2a64524979df899d3', 10, 10);
 Dump::d('fetchHistory 10 10', $fetchHistory1010);
+
+$filter = new HistoryFilters();
+$filter->setIsForging(true);
+$fetchHistoryFilter = $metaHash->fetchHistoryFilter('0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833', $filter, 2);
+Dump::d('fetchHistoryFilter', $fetchHistoryFilter);
 
 $getTx = $metaHash->getTx('dd86635a7d7a8d8d44fc604f5fbb51eeb920dd28611b0f634e40b60af02a8c68');
 Dump::d('getTx', $getTx);

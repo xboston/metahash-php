@@ -191,7 +191,7 @@ class MetaHash
      * @return bool|mixed|string
      * @throws GuzzleException
      */
-    public function fetchHistory(string $address, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0)
+    public function fetchHistory(string $address, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0): array
     {
         if ($countTx > self::HISTORY_LIMIT) {
             throw new RuntimeException('Too many transaction. Maximum is '.self::HISTORY_LIMIT);
@@ -203,6 +203,35 @@ class MetaHash
                 'address'  => $address,
                 'countTxs' => $countTx,
                 'beginTx'  => $beginTx,
+            ]
+        );
+    }
+
+    /**
+     * Get address transaction history
+     *
+     * @see https://github.com/xboston/metahash-api#fetch-history-filter
+     *
+     * @param string $address
+     * @param HistoryFilters $filter
+     * @param int $countTx
+     * @param int $beginTx
+     * @return array
+     * @throws GuzzleException
+     */
+    public function fetchHistoryFilter(string $address, HistoryFilters $filter, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0): array
+    {
+        if ($countTx > self::HISTORY_LIMIT) {
+            throw new RuntimeException('Too many transaction. Maximum is '.self::HISTORY_LIMIT);
+        }
+
+        return $this->queryTorrent(
+            'fetch-history-filter',
+            [
+                'address'  => $address,
+                'countTxs' => $countTx,
+                'beginTx'  => $beginTx,
+                'filters'  => $filter,
             ]
         );
     }
