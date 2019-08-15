@@ -1,6 +1,6 @@
 {
     "name": "xboston/metahash",
-    "description": "Pure PHP MetaHash library",
+    "description": "PHP MetaHash SDK",
     "keywords": ["metahash", "blockchain"],
     "license": "MIT",
     "type": "library",
