@@ -37,6 +37,14 @@ composer require xboston/metahash
 - [x] get-dump-block-by-number
 - [x] get-dump-block-by-hash
 - [x] get-count-blocks
+- [x] get-forging-sum
+- [x] get-last-node-stat-result
+- [x] get-last-node-stat-trust
+- [x] get-last-node-stat-count
+- [x] get-last-nodes-stats-count
+- [x] get-all-last-nodes-count
+- [x] get-nodes-raiting
+- [x] get-common-balance
 - [x] status
 - [x] mhc_send
 - [x] getinfo

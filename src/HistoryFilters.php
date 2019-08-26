@@ -9,19 +9,20 @@ use JsonSerializable;
 
 /**
  * Class HistoryFilters
+ *
  * @package Metahash
  */
 class HistoryFilters implements JsonSerializable
 {
-    public $isInput = false;// - Display only isInput transactions
-    public $isOutput = false;// - Display only isOutput transactions
-    public $isSuccess = false;// - Display only success transactions
-    public $isForging = false;// - Display only forging transactions
-    public $isTest = false;//- Display only test transactions
-    public $isDelegate = false;//- Display only delegation transactions
+    public $isInput = false;   // - Display only isInput transactions
+    public $isOutput = false;  // - Display only isOutput transactions
+    public $isSuccess = false; // - Display only success transactions
+    public $isForging = false; // - Display only forging transactions
+    public $isTest = false;    // - Display only test transactions
+    public $isDelegate = false;// - Display only delegation transactions
 
     /**
-     * @return array|mixed
+     * @return array
      */
     public function jsonSerialize(): array
     {
@@ -36,7 +37,7 @@ class HistoryFilters implements JsonSerializable
     }
 
     /**
-     * @param bool $isInput
+     * @param  bool  $isInput
      */
     public function setIsInput(bool $isInput): void
     {
@@ -44,7 +45,7 @@ class HistoryFilters implements JsonSerializable
     }
 
     /**
-     * @param bool $isOutput
+     * @param  bool  $isOutput
      */
     public function setIsOutput(bool $isOutput): void
     {
@@ -52,7 +53,7 @@ class HistoryFilters implements JsonSerializable
     }
 
     /**
-     * @param bool $isSuccess
+     * @param  bool  $isSuccess
      */
     public function setIsSuccess(bool $isSuccess): void
     {
@@ -60,7 +61,7 @@ class HistoryFilters implements JsonSerializable
     }
 
     /**
-     * @param bool $isForging
+     * @param  bool  $isForging
      */
     public function setIsForging(bool $isForging): void
     {
@@ -68,7 +69,7 @@ class HistoryFilters implements JsonSerializable
     }
 
     /**
-     * @param bool $isTest
+     * @param  bool  $isTest
      */
     public function setIsTest(bool $isTest): void
     {
@@ -76,7 +77,7 @@ class HistoryFilters implements JsonSerializable
     }
 
     /**
-     * @param bool $isDelegate
+     * @param  bool  $isDelegate
      */
     public function setIsDelegate(bool $isDelegate): void
     {

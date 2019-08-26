@@ -43,7 +43,7 @@ class MetaHashCrypto
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
      *
-     * @param int $keyType
+     * @param  int  $keyType
      *
      * @return array
      */
@@ -81,8 +81,8 @@ class MetaHashCrypto
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
      *
-     * @param string $keyPublic
-     * @param string $net
+     * @param  string  $keyPublic
+     * @param  string  $net
      *
      * @return string
      */
@@ -115,7 +115,7 @@ class MetaHashCrypto
     }
 
     /**
-     * @param string $string
+     * @param  string  $string
      *
      * @return string
      */
@@ -125,7 +125,7 @@ class MetaHashCrypto
     }
 
     /**
-     * @param string $string
+     * @param  string  $string
      *
      * @return string
      */
@@ -139,7 +139,7 @@ class MetaHashCrypto
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
      *
-     * @param string $privateKey
+     * @param  string  $privateKey
      *
      * @return string
      * @throws ParserException
@@ -161,10 +161,10 @@ class MetaHashCrypto
     /**
      * Signature data
      *
-     * @param string $data
-     * @param string $privateKey
-     * @param bool $rand
-     * @param string $algo
+     * @param  string  $data
+     * @param  string  $privateKey
+     * @param  bool    $rand
+     * @param  string  $algo
      *
      * @return string
      * @throws ParserException
@@ -179,7 +179,7 @@ class MetaHashCrypto
         $hasher = new SignHasher($algo, $this->adapter);
         $hash = $hasher->makeHash($data, $this->generator);
 
-        if (! $rand) {
+        if (!$rand) {
             $random = RandomGeneratorFactory::getHmacRandomGenerator($key, $hash, $algo);
         } else {
             $random = RandomGeneratorFactory::getRandomGenerator();
@@ -200,10 +200,10 @@ class MetaHashCrypto
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
      *
-     * @param string $sign
-     * @param string $data
-     * @param string $publicKey
-     * @param string $algo
+     * @param  string  $sign
+     * @param  string  $data
+     * @param  string  $publicKey
+     * @param  string  $algo
      *
      * @return bool
      * @throws ParserException
@@ -231,7 +231,7 @@ class MetaHashCrypto
     /**
      * Validate address
      *
-     * @param string $address
+     * @param  string  $address
      *
      * @return bool
      */
@@ -258,11 +258,11 @@ class MetaHashCrypto
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360003271694-Creating-transactions
      *
-     * @param string $address
-     * @param int $value
-     * @param int $nonce
-     * @param int $fee
-     * @param string $data
+     * @param  string  $address
+     * @param  int     $value
+     * @param  int     $nonce
+     * @param  int     $fee
+     * @param  string  $data
      *
      * @return bool|string
      */
@@ -283,7 +283,7 @@ class MetaHashCrypto
     }
 
     /**
-     * @param string $string
+     * @param  string  $string
      *
      * @return string
      */
@@ -293,7 +293,7 @@ class MetaHashCrypto
     }
 
     /**
-     * @param string $hex
+     * @param  string  $hex
      *
      * @return string
      */
@@ -311,7 +311,7 @@ class MetaHashCrypto
     }
 
     /**
-     * @param GmpMathInterface $adapter
+     * @param  GmpMathInterface  $adapter
      */
     public function setAdapter(GmpMathInterface $adapter): void
     {
@@ -327,7 +327,7 @@ class MetaHashCrypto
     }
 
     /**
-     * @param GeneratorPoint $generator
+     * @param  GeneratorPoint  $generator
      */
     public function setGenerator(GeneratorPoint $generator): void
     {
