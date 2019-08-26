@@ -88,7 +88,7 @@ class MetaHash
     }
 
     /**
-     * @param int $timeout
+     * @param  int  $timeout
      */
     public function setTimeout(int $timeout): void
     {
@@ -104,7 +104,7 @@ class MetaHash
     }
 
     /**
-     * @param int $connectTimeout
+     * @param  int  $connectTimeout
      */
     public function setConnectTimeout(int $connectTimeout): void
     {
@@ -120,7 +120,7 @@ class MetaHash
     }
 
     /**
-     * @param bool $debug
+     * @param  bool  $debug
      */
     public function setDebug(bool $debug): void
     {
@@ -132,7 +132,7 @@ class MetaHash
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network
      *
-     * @param int $keyType
+     * @param  int  $keyType
      *
      * @return array
      */
@@ -154,7 +154,7 @@ class MetaHash
     }
 
     /**
-     * @param MetaHashCrypto $metahashCrypto
+     * @param  MetaHashCrypto  $metahashCrypto
      */
     public function setMetahashCrypto(MetaHashCrypto $metahashCrypto): void
     {
@@ -164,9 +164,9 @@ class MetaHash
     /**
      * Validate address
      *
-     * @param string $address
+     * @param  string  $address
      *
-     * @param bool $fast
+     * @param  bool    $fast
      *
      * @return bool
      */
@@ -184,11 +184,11 @@ class MetaHash
      *
      * @see https://github.com/xboston/metahash-api#fetch-history
      *
-     * @param string $address
-     * @param int $countTx
-     * @param int $beginTx
+     * @param  string  $address
+     * @param  int     $countTx
+     * @param  int     $beginTx
      *
-     * @return bool|mixed|string
+     * @return array
      * @throws GuzzleException
      */
     public function fetchHistory(string $address, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0): array
@@ -208,39 +208,10 @@ class MetaHash
     }
 
     /**
-     * Get address transaction history
-     *
-     * @see https://github.com/xboston/metahash-api#fetch-history-filter
-     *
-     * @param string $address
-     * @param HistoryFilters $filter
-     * @param int $countTx
-     * @param int $beginTx
-     * @return array
-     * @throws GuzzleException
-     */
-    public function fetchHistoryFilter(string $address, HistoryFilters $filter, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0): array
-    {
-        if ($countTx > self::HISTORY_LIMIT) {
-            throw new RuntimeException('Too many transaction. Maximum is '.self::HISTORY_LIMIT);
-        }
-
-        return $this->queryTorrent(
-            'fetch-history-filter',
-            [
-                'address'  => $address,
-                'countTxs' => $countTx,
-                'beginTx'  => $beginTx,
-                'filters'  => $filter,
-            ]
-        );
-    }
-
-    /**
      * Send request to torrent node
      *
-     * @param string $method
-     * @param array $params
+     * @param  string  $method
+     * @param  array   $params
      *
      * @return array
      * @throws GuzzleException
@@ -257,7 +228,7 @@ class MetaHash
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360008219634-Metahash-networks
      *
-     * @param string $nodeName
+     * @param  string  $nodeName
      *
      * @return mixed
      * @throws Exception
@@ -304,7 +275,7 @@ class MetaHash
     }
 
     /**
-     * @param string $network
+     * @param  string  $network
      */
     public function setNetwork(string $network): void
     {
@@ -314,7 +285,7 @@ class MetaHash
     /**
      * Node availability check
      *
-     * @param string $host
+     * @param  string  $host
      *
      * @return bool
      * @throws GuzzleException
@@ -332,9 +303,9 @@ class MetaHash
     }
 
     /**
-     * @param string $url
-     * @param string $method
-     * @param array $params
+     * @param  string  $url
+     * @param  string  $method
+     * @param  array   $params
      *
      * @return array
      * @throws GuzzleException
@@ -358,6 +329,35 @@ class MetaHash
     }
 
     /**
+     * Get address transaction history
+     *
+     * @see https://github.com/xboston/metahash-api#fetch-history-filter
+     *
+     * @param  string          $address
+     * @param  HistoryFilters  $filter
+     * @param  int             $countTx
+     * @param  int             $beginTx
+     * @return array
+     * @throws GuzzleException
+     */
+    public function fetchHistoryFilter(string $address, HistoryFilters $filter, int $countTx = self::HISTORY_LIMIT, int $beginTx = 0): array
+    {
+        if ($countTx > self::HISTORY_LIMIT) {
+            throw new RuntimeException('Too many transaction. Maximum is '.self::HISTORY_LIMIT);
+        }
+
+        return $this->queryTorrent(
+            'fetch-history-filter',
+            [
+                'address'  => $address,
+                'countTxs' => $countTx,
+                'beginTx'  => $beginTx,
+                'filters'  => $filter,
+            ]
+        );
+    }
+
+    /**
      * Get blocks count on torrent node
      *
      * @see https://github.com/xboston/metahash-api#get-count-blocks
@@ -372,9 +372,130 @@ class MetaHash
     }
 
     /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-forging-sum
+     *
+     *
+     * @param  int  $blockIndent
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getForgingSum(int $blockIndent): array
+    {
+        return $this->queryTorrent('get-forging-sum', [
+            'block_indent' => $blockIndent
+        ]);
+    }
+
+    /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-last-node-stat-result
+     *
+     *
+     * @param  string  $address
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getLastNodeStatResult(string $address): array
+    {
+        return $this->queryTorrent('get-last-node-stat-result', [
+            'address' => $address
+        ]);
+    }
+
+    /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-last-node-stat-trust
+     *
+     *
+     * @param  string  $address
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getLastNodeStatTrust(string $address): array
+    {
+        return $this->queryTorrent('get-last-node-stat-trust', [
+            'address' => $address
+        ]);
+    }
+
+    /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-last-node-stat-count
+     *
+     *
+     * @param  string  $address
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getLastNodeStatCount(string $address): array
+    {
+        return $this->queryTorrent('get-last-node-stat-count', [
+            'address' => $address
+        ]);
+    }
+
+    /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-last-nodes-stats-count
+     *
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getLastNodesStatsCount(): array
+    {
+        return $this->queryTorrent('get-last-nodes-stats-count');
+    }
+
+    /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-all-last-nodes-count
+     *
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getAllLastNodesCount(int $countTests): array
+    {
+        return $this->queryTorrent('get-all-last-nodes-count', [
+            'count_tests' => $countTests
+        ]);
+    }
+
+    /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-nodes-raiting
+     *
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getNodesRaiting(string $address, int $countTests = 10): array
+    {
+        return $this->queryTorrent('get-nodes-raiting', [
+            'address'     => $address,
+            'count_tests' => $countTests
+        ]);
+    }
+
+    /**
+     *
+     * @see https://github.com/xboston/metahash-api#get-common-balance
+     *
+     *
+     * @return array
+     * @throws GuzzleException
+     */
+    public function getCommonBalance(): array
+    {
+        return $this->queryTorrent('get-common-balance');
+    }
+
+    /**
      * @see https://github.com/xboston/metahash-api#get-tx
      *
-     * @param string $hash
+     * @param  string  $hash
      *
      * @return array
      * @throws Exception
@@ -388,9 +509,9 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#get-address-delegations
      *
-     * @param string $address
-     * @param int $countTx
-     * @param int $beginTx
+     * @param  string  $address
+     * @param  int     $countTx
+     * @param  int     $beginTx
      *
      * @return array
      * @throws GuzzleException
@@ -409,7 +530,7 @@ class MetaHash
      *
      * @see https://developers.metahash.org/hc/en-us/articles/360003271694-Creating-transactions
      *
-     * @param string $address
+     * @param  string  $address
      *
      * @return int
      * @throws Exception
@@ -425,7 +546,7 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#fetch-balance
      *
-     * @param string $address
+     * @param  string  $address
      *
      * @return array
      * @throws Exception
@@ -439,7 +560,7 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#fetch-balances
      *
-     * @param array $addresses
+     * @param  array  $addresses
      *
      * @return array
      * @throws GuzzleException
@@ -463,8 +584,8 @@ class MetaHash
     /**
      * Signature data
      *
-     * @param string $signText
-     * @param string $privateKey
+     * @param  string  $signText
+     * @param  string  $privateKey
      *
      * @return string
      * @throws ParserException
@@ -477,8 +598,8 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#get-block-by-number
      *
-     * @param int $number
-     * @param int $type
+     * @param  int  $number
+     * @param  int  $type
      *
      * @return array
      * @throws Exception
@@ -492,10 +613,10 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#get-block-by-hash
      *
-     * @param string $hash
-     * @param int $type
-     * @param int $countTx
-     * @param int $beginTx
+     * @param  string  $hash
+     * @param  int     $type
+     * @param  int     $countTx
+     * @param  int     $beginTx
      *
      * @return array
      * @throws GuzzleException
@@ -516,8 +637,8 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#get-blocks
      *
-     * @param int $countBlocks
-     * @param int $beginBlock
+     * @param  int  $countBlocks
+     * @param  int  $beginBlock
      *
      * @return array
      * @throws GuzzleException
@@ -541,8 +662,8 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#get-dump-block-by-number
      *
-     * @param int $number
-     * @param bool $isHex
+     * @param  int   $number
+     * @param  bool  $isHex
      *
      * @return array
      * @throws GuzzleException
@@ -555,8 +676,8 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#get-dump-block-by-hash
      *
-     * @param string $hash
-     * @param bool $isHex
+     * @param  string  $hash
+     * @param  bool    $isHex
      *
      * @return array
      * @throws GuzzleException
@@ -580,8 +701,8 @@ class MetaHash
     /**
      * Send request to proxy node
      *
-     * @param string $method
-     * @param array $params
+     * @param  string  $method
+     * @param  array   $params
      *
      * @return array
      * @throws Exception
@@ -597,12 +718,12 @@ class MetaHash
     /**
      * @see https://github.com/xboston/metahash-api#mhc_send
      *
-     * @param string $privateKey
-     * @param string $to
-     * @param int $value
-     * @param string $data
-     * @param int $nonce
-     * @param int $fee
+     * @param  string  $privateKey
+     * @param  string  $to
+     * @param  int     $value
+     * @param  string  $data
+     * @param  int     $nonce
+     * @param  int     $fee
      *
      * @return array
      * @throws GuzzleException
@@ -637,7 +758,7 @@ class MetaHash
     }
 
     /**
-     * @param GuzzleClient $client
+     * @param  GuzzleClient  $client
      */
     public function setClient(GuzzleClient $client): void
     {
@@ -653,7 +774,7 @@ class MetaHash
     }
 
     /**
-     * @param array $hosts
+     * @param  array  $hosts
      */
     public function setHosts(array $hosts): void
     {
