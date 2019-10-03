@@ -471,7 +471,7 @@ class MetaHash
      * @return array
      * @throws GuzzleException
      */
-    public function getNodesRaiting(string $address, int $countTests = 10): array
+    public function getNodesRating(string $address, int $countTests = 10): array
     {
         return $this->queryTorrent('get-nodes-raiting', [
             'address'     => $address,

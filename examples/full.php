@@ -59,7 +59,7 @@ Dump::d('get-last-nodes-stats-count', $metaHash->getLastNodesStatsCount());
 
 Dump::d('get-all-last-nodes-count', $metaHash->getAllLastNodesCount(2));
 
-Dump::d('get-nodes-raiting', $metaHash->getNodesRaiting('0x00d5b768fee94349103e2f69484dff207a3bbb2a5077defd6e', 2));
+Dump::d('get-nodes-raiting', $metaHash->getNodesRating('0x00d5b768fee94349103e2f69484dff207a3bbb2a5077defd6e', 2));
 
 Dump::d('get-common-balance', $metaHash->getCommonBalance());
 
