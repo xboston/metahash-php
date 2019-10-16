@@ -72,7 +72,7 @@ print_r($balance);
 ```shell
 git clone git@github.com:xboston/metahash-php.git
 cd metahash-php
-composer install --no-dev
+composer install
 php examples/cli.php method=generate
 php examples/cli.php method=fetch-balance address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833
 php examples/cli.php method=fetch-balances address=0x00fa2a5279f8f0fd2f0f9d3280ad70403f01f9d62f52373833,0x0039f42ad734606d250ea0b0151d4aeab6b4edc6587c4b27ef
@@ -86,7 +86,7 @@ php examples/cli.php method=get-last-txs
 ```
 git clone git@github.com:xboston/metahash-php.git
 cd metahash-php
-composer install --no-dev
+composer install
 cd examples
 php -S localhost:8000
 ```

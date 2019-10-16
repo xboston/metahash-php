@@ -2,6 +2,7 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
+use Dump\Dump;
 use Metahash\MetaHash;
 use Metahash\MetaHashCrypto;
 
@@ -25,7 +26,7 @@ try {
         case 'generate':
             $metaHash->setMetahashCrypto(new MetaHashCrypto());
             $result = $metaHash->generateKey();
-            echo \json_encode($result, JSON_PRETTY_PRINT);
+            Dump::d($result);
             break;
 
         case 'fetch-balance':
@@ -37,7 +38,7 @@ try {
                 throw new \RuntimeException('invalid address value', 1);
             }
 
-            echo \json_encode($metaHash->fetchBalance((string)$args['address']), JSON_PRETTY_PRINT);
+            Dump::d($metaHash->fetchBalance((string)$args['address']));
             break;
 
         case 'fetch-balances':
@@ -53,7 +54,7 @@ try {
                 }
             });
 
-            echo \json_encode($metaHash->fetchBalances($addresess), JSON_PRETTY_PRINT);
+            Dump::d($metaHash->fetchBalances($addresess));
             break;
 
         case 'fetch-history':
@@ -65,7 +66,7 @@ try {
                 throw new \RuntimeException('invalid address value', 1);
             }
 
-            echo \json_encode($metaHash->fetchHistory((string)$args['address'], 10), JSON_PRETTY_PRINT);
+            Dump::d($metaHash->fetchHistory((string)$args['address'], 10));
             break;
 
         case 'get-tx':
@@ -73,11 +74,11 @@ try {
                 throw new \RuntimeException('hash is empty', 1);
             }
 
-            echo \json_encode($metaHash->getTx((string)$args['hash']), JSON_PRETTY_PRINT);
+            Dump::d($metaHash->getTx((string)$args['hash']));
             break;
 
         case 'get-last-txs':
-            echo \json_encode($metaHash->getLastTxs(), JSON_PRETTY_PRINT);
+            Dump::d($metaHash->getLastTxs());
             break;
 
         default:

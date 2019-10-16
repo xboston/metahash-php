@@ -2,6 +2,7 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
+use Dump\Dump;
 use Metahash\MetaHash;
 
 $metaHash = new MetaHash();
@@ -19,4 +20,4 @@ $data = 'send via https://github.com/xboston/php-metahash';
 $nonce = $metaHash->getNonce($fromAddress);
 $sendTx = $metaHash->sendTx($fromPrivateKey, $toAddress, $amount, $data, $nonce);
 
-\var_dump('sendTx', $sendTx);
+Dump::d($sendTx);
