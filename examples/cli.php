@@ -15,7 +15,7 @@ try {
     $args['address'] = isset($args['address']) && ! empty($args['address']) ? $args['address'] : null;
     $args['hash'] = isset($args['hash']) && ! empty($args['hash']) ? $args['hash'] : null;
 
-    if (empty($args['method']) || $args['method'] === null) {
+    if (empty($args['method'])) {
         throw new \RuntimeException('method is empty', 1);
     }
 
@@ -83,7 +83,6 @@ try {
 
         default:
             throw new \RuntimeException('unknown method');
-            break;
     }
 } catch (Exception $e) {
     echo \json_encode(['error' => true, 'message' => $e->getMessage()], JSON_PRETTY_PRINT);

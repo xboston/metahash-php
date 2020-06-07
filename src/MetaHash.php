@@ -251,7 +251,6 @@ class MetaHash
                 break;
             default:
                 throw new RuntimeException('Unknown node type. Type '.$nodeName);
-                break;
         }
 
         $hostsList = \dns_get_record($nodeUrl, DNS_A);

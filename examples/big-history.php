@@ -6,11 +6,8 @@ use Metahash\MetaHash;
 
 $metaHash = new MetaHash();
 
-// big history node
+// address with big history
 $address = '0x0038b12b0fafdc0ec523e3059882daf56fc3b3f6932a527987';
-
-$bigHistoryResult = fetchFullHistory($metaHash, $address);
-\print_r($bigHistoryResult);
 
 function fetchFullHistory(MetaHash $metaHash, string $address)
 {
@@ -36,3 +33,6 @@ function fetchFullHistory(MetaHash $metaHash, string $address)
 
     return $result;
 }
+
+$bigHistoryResult = \fetchFullHistory($metaHash, $address);
+\print_r($bigHistoryResult);

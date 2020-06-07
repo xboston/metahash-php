@@ -1,7 +1,10 @@
 {
     "name": "xboston/metahash",
     "description": "PHP MetaHash SDK",
-    "keywords": ["metahash", "blockchain"],
+    "keywords": [
+        "metahash",
+        "blockchain"
+    ],
     "license": "MIT",
     "type": "library",
     "homepage": "https://github.com/xboston/php-metahash",
@@ -10,7 +13,7 @@
         "ext-gmp": "*",
         "ext-json": "*",
         "mdanter/ecc": "^0.5.2",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6"
     },
     "autoload": {
         "psr-4": {
@@ -18,10 +21,10 @@
         }
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.15",
-        "overtrue/phplint": "^1.1",
-        "phpstan/phpstan": "^0.11.16",
-        "squizlabs/php_codesniffer": "^3.5",
-        "ghostff/dump7": "^1.0"
+        "friendsofphp/php-cs-fixer": "^2",
+        "overtrue/phplint": "^1",
+        "phpstan/phpstan": "^0.12",
+        "squizlabs/php_codesniffer": "^3",
+        "ghostff/dump7": "^1"
     }
 }
