@@ -2,7 +2,7 @@
 .idea
 .yarn
 .vscode
-.php_cs.cache
+.php-cs-fixer.cache
 .DS_Store
 phplint.cache
 test.php
