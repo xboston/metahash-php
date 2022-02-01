@@ -324,7 +324,13 @@ class MetaHash
             throw new RuntimeException('QueryTorrent Error: '.$response->getBody()->getContents());
         }
 
-        return \json_decode($response->getBody()->getContents(), true);
+        $result = \json_decode($response->getBody()->getContents(), true);
+
+        if ($result === null) {
+            throw new RuntimeException('QueryTorrent Error: Empty response');
+        }
+
+        return $result;
     }
 
     /**
