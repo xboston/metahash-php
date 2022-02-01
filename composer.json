@@ -12,7 +12,7 @@
     "type": "library",
     "homepage": "https://github.com/xboston/php-metahash",
     "require": {
-        "php": ">=7.1",
+        "php": ">=8.0.2",
         "ext-gmp": "*",
         "ext-json": "*",
         "mdanter/ecc": "^1.0",
