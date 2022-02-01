@@ -4,7 +4,7 @@ An unofficial PHP library for [#MetaHash](https://metahash.org ) blockchain.
 
 ### Requirements
 
-- PHP 7.1+
+- PHP 8.0.2+
 - ext-gmp
 - ext-curl
 - composer
